@@ -16,7 +16,7 @@ export const GISLayout: React.FC<GISLayoutProps> = ({
   return (
     <div className="flex-1 flex flex-col h-full w-full overflow-hidden relative">
       {topBar && (
-        <div className="shrink-0 z-10 bg-slate-900 border-b border-slate-800">
+        <div className="shrink-0 z-10 bg-ops-panel border-b border-ops-border">
           {topBar}
         </div>
       )}

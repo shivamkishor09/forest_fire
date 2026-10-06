@@ -2,6 +2,15 @@ import React from 'react';
 import { LayerMetadata } from '../../../types/domain';
 import { Badge } from '../../../components/ui/Badge';
 import { Skeleton } from '../../../components/feedback/Skeleton';
+import {
+  LayersIcon,
+  FlameIcon,
+  MountainIcon,
+  WindIcon,
+  LeafIcon,
+  ShieldIcon,
+  ActivityIcon,
+} from '../../../components/common/Icons';
 
 export interface LayerManagerProps {
   layers: LayerMetadata[];
@@ -10,6 +19,25 @@ export interface LayerManagerProps {
   isLoading?: boolean;
   className?: string;
 }
+
+const getCategoryIcon = (category: string) => {
+  switch (category) {
+    case 'risk':
+      return <ShieldIcon className="w-3.5 h-3.5 text-amber" />;
+    case 'fire':
+      return <FlameIcon className="w-3.5 h-3.5 text-danger" />;
+    case 'terrain':
+      return <MountainIcon className="w-3.5 h-3.5 text-txt-secondary" />;
+    case 'weather':
+      return <WindIcon className="w-3.5 h-3.5 text-txt-secondary" />;
+    case 'vegetation':
+      return <LeafIcon className="w-3.5 h-3.5 text-forest" />;
+    case 'simulation':
+      return <ActivityIcon className="w-3.5 h-3.5 text-amber" />;
+    default:
+      return <LayersIcon className="w-3.5 h-3.5 text-txt-muted" />;
+  }
+};
 
 export const LayerManager: React.FC<LayerManagerProps> = ({
   layers,
@@ -35,57 +63,47 @@ export const LayerManager: React.FC<LayerManagerProps> = ({
     temperature: '°C',
     humidity: '%',
     fwi: 'FWI Index',
-    ndvi: 'NDVI Index [-1, 1]',
-    risk_layer: 'Probability [0.0 - 1.0]',
-    active_fires: 'Radiative Power (MW) / K',
-    simulation: 'Perimeter Hectares (ha)',
+    ndvi: 'NDVI [-1, 1]',
+    risk_layer: 'Prob [0-1]',
+    active_fires: 'FRP (MW)',
+    simulation: 'Area (ha)',
   };
 
   return (
-    <div className={`space-y-2.5 overflow-y-auto ${className}`}>
+    <div className={`space-y-2 overflow-y-auto ${className}`}>
       {layers.map((layer) => {
         const isSelected = layer.id === selectedLayerId;
-
-        const categoryIcons: Record<string, string> = {
-          risk: '🗺️',
-          fire: '🔥',
-          terrain: '⛰️',
-          weather: '💨',
-          vegetation: '🌲',
-          simulation: '⏳',
-        };
-
         const unit = layerUnits[layer.id] || (layer.category === 'terrain' ? 'm / °' : null);
 
         return (
           <div
             key={layer.id}
             onClick={() => onSelectLayer(layer.id)}
-            className={`p-3.5 rounded-xl border transition-all cursor-pointer ${
+            className={`p-3 rounded-xs border transition-all cursor-pointer ${
               isSelected
-                ? 'bg-amber-600/15 border-amber-500 shadow-md'
-                : 'bg-slate-900/60 border-slate-800 hover:border-slate-700 hover:bg-slate-900'
+                ? 'bg-ops-surface border-ops-border border-l-2 border-l-forest'
+                : 'bg-ops-bg border-ops-border hover:bg-ops-surface/50 border-l-2 border-l-transparent'
             }`}
           >
-            <div className="flex items-center justify-between mb-1.5">
-              <span className="font-semibold text-xs text-slate-200 flex items-center space-x-2">
-                <span>{categoryIcons[layer.category] || '📑'}</span>
+            <div className="flex items-center justify-between mb-1">
+              <span className="font-semibold text-xs text-txt-primary flex items-center space-x-2">
+                {getCategoryIcon(layer.category)}
                 <span>{layer.name}</span>
               </span>
               <Badge variant={layer.is_available ? 'success' : 'neutral'} size="sm">
-                {layer.is_available ? 'Operational Layer' : 'Upcoming Ingestion Pipeline'}
+                {layer.is_available ? 'ONLINE' : 'STANDBY'}
               </Badge>
             </div>
 
-            <p className="text-[11px] text-slate-400 leading-relaxed mb-2">
+            <p className="text-[11px] text-txt-secondary leading-relaxed mb-2">
               {layer.description}
             </p>
 
-            <div className="flex items-center justify-between text-[10px] font-mono text-slate-500 pt-2 border-t border-slate-800/80">
-              <span>Source: {layer.source}</span>
+            <div className="flex items-center justify-between text-[10px] font-mono text-txt-muted pt-1.5 border-t border-ops-border">
+              <span>{layer.source}</span>
               <div className="flex items-center space-x-2">
-                {unit && <span className="text-amber-400/90">{unit}</span>}
-                <span>{layer.resolution || '500m Grid'}</span>
+                {unit && <span className="text-amber font-medium">{unit}</span>}
+                <span className="text-txt-secondary">{layer.resolution || '500m'}</span>
               </div>
             </div>
           </div>
@@ -94,3 +112,4 @@ export const LayerManager: React.FC<LayerManagerProps> = ({
     </div>
   );
 };
+

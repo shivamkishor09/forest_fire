@@ -1,5 +1,6 @@
 import React, { useState } from 'react';
 import { useMapContext } from '../hooks/useMapContext';
+import { LayersIcon, ChevronDownIcon, ChevronUpIcon } from '../../../components/common/Icons';
 
 export interface LayerControlsProps {
   className?: string;
@@ -10,32 +11,36 @@ export const LayerControls: React.FC<LayerControlsProps> = ({ className = '' }) 
   const [isOpen, setIsOpen] = useState(false);
 
   const layerItems = [
-    { key: 'regionBoundary', label: 'Region Boundary', supported: true, color: '#38bdf8' },
-    { key: 'riskChoropleth', label: '24h Risk (500m)', supported: true, color: '#f59e0b' },
-    { key: 'activeFires', label: 'Active Thermal Hotspots', supported: true, color: '#ef4444' },
-    { key: 'simulationPerimeter', label: '12h Spread Perimeter', supported: true, color: '#ec4899' },
-    { key: 'terrain', label: 'Elevation / Slope (CartoDEM)', supported: false, color: '#a855f7' },
-    { key: 'weather', label: 'Wind / FWI Vectors (IMD)', supported: false, color: '#06b6d4' },
+    { key: 'regionBoundary', label: 'Region Boundary', supported: true, color: '#3F7D58' },
+    { key: 'riskChoropleth', label: '24h Risk Grid (500m)', supported: true, color: '#D99A2B' },
+    { key: 'activeFires', label: 'Active Hotspots (FIRMS)', supported: true, color: '#D84A3A' },
+    { key: 'simulationPerimeter', label: 'Spread Perimeter', supported: true, color: '#E06D2E' },
+    { key: 'terrain', label: 'Elevation / Slope', supported: false, color: '#737C74' },
+    { key: 'weather', label: 'Wind / FWI Vectors', supported: false, color: '#737C74' },
   ] as const;
 
   return (
     <div className={`z-[400] relative select-none ${className}`}>
       <button
         onClick={() => setIsOpen(!isOpen)}
-        className="h-8 px-3 bg-slate-900/95 border border-slate-700/80 rounded-xl shadow-xl backdrop-blur-md flex items-center space-x-2 text-xs font-semibold text-slate-200 hover:text-amber-400 transition-colors"
+        className="h-7 px-2.5 bg-ops-panel border border-ops-border rounded-[3px] shadow-md flex items-center space-x-1.5 text-xs font-medium text-txt-primary hover:bg-ops-surface transition-colors"
         title="Toggle Map Layers"
         aria-expanded={isOpen}
       >
-        <span>📑</span>
-        <span>Layers</span>
-        <span className="text-[10px] text-slate-400">{isOpen ? '▲' : '▼'}</span>
+        <LayersIcon className="w-3.5 h-3.5 text-txt-muted" />
+        <span className="font-mono text-[11px]">LAYERS</span>
+        {isOpen ? (
+          <ChevronUpIcon className="w-3.5 h-3.5 text-txt-muted" />
+        ) : (
+          <ChevronDownIcon className="w-3.5 h-3.5 text-txt-muted" />
+        )}
       </button>
 
       {isOpen && (
-        <div className="absolute right-0 top-10 w-64 bg-slate-900/95 border border-slate-700/80 rounded-xl shadow-2xl p-3 backdrop-blur-md animate-fadeIn text-xs">
-          <div className="font-semibold text-slate-200 pb-2 mb-2 border-b border-slate-800 flex justify-between items-center">
-            <span>GIS Overlays</span>
-            <span className="text-[10px] font-mono text-slate-400">EPSG:4326</span>
+        <div className="absolute right-0 top-8 w-60 bg-ops-panel border border-ops-border rounded-[3px] shadow-xl p-3 text-xs">
+          <div className="font-mono text-[11px] font-semibold text-txt-primary pb-2 mb-2 border-b border-ops-border flex justify-between items-center">
+            <span>GIS OVERLAYS</span>
+            <span className="text-[10px] text-txt-muted">EPSG:4326</span>
           </div>
 
           <div className="space-y-2">
@@ -49,23 +54,23 @@ export const LayerControls: React.FC<LayerControlsProps> = ({ className = '' }) 
                       checked={isChecked}
                       disabled={!item.supported}
                       onChange={() => toggleLayer(item.key as keyof typeof activeLayers)}
-                      className="rounded border-slate-700 bg-slate-800 text-amber-500 focus:ring-0 cursor-pointer disabled:cursor-not-allowed"
+                      className="rounded-[2px] border-ops-border bg-ops-bg text-forest focus:ring-0 cursor-pointer disabled:cursor-not-allowed"
                     />
                     <span
-                      className="w-2.5 h-2.5 rounded-full shrink-0"
+                      className="w-2.5 h-2.5 rounded-[1px] shrink-0"
                       style={{ backgroundColor: item.color }}
                     />
                     <span
                       className={`text-[11px] ${
-                        item.supported ? 'text-slate-200' : 'text-slate-500 line-through'
+                        item.supported ? 'text-txt-primary' : 'text-txt-muted line-through'
                       }`}
                     >
                       {item.label}
                     </span>
                   </label>
                   {!item.supported && (
-                    <span className="text-[9px] font-mono uppercase px-1 py-0.5 rounded bg-slate-800 text-slate-500 border border-slate-800">
-                      Soon
+                    <span className="text-[9px] font-mono uppercase px-1 py-0.2 rounded bg-ops-bg text-txt-muted border border-ops-border">
+                      N/A
                     </span>
                   )}
                 </div>
@@ -77,3 +82,4 @@ export const LayerControls: React.FC<LayerControlsProps> = ({ className = '' }) 
     </div>
   );
 };
+

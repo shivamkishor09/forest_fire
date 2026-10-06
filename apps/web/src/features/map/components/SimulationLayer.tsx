@@ -40,9 +40,9 @@ export const SimulationLayer: React.FC<SimulationLayerProps> = ({
       });
 
       marker.bindPopup(
-        `<div class="p-1 font-sans text-xs">
-          <strong class="text-rose-400">🎯 Simulation Ignition Point</strong><br/>
-          <span class="font-mono text-slate-300">
+        `<div class="p-1 font-mono text-xs">
+          <strong class="text-danger uppercase tracking-wider text-[11px]">Simulation Ignition Origin</strong><br/>
+          <span class="text-txt-primary">
             ${ignitionPoint.latitude.toFixed(4)}°N, ${ignitionPoint.longitude.toFixed(4)}°E
           </span>
         </div>`
@@ -86,10 +86,10 @@ export const SimulationLayer: React.FC<SimulationLayerProps> = ({
             props?.step_number === visibleFeatures[visibleFeatures.length - 1]?.properties?.step_number;
 
           return {
-            color: isLatest ? '#f43f5e' : '#fb923c', // rose-500 or orange-400
-            weight: isLatest ? 2.5 : 1.5,
-            fillColor: isLatest ? '#f43f5e' : '#ea580c',
-            fillOpacity: isLatest ? 0.35 : 0.15,
+            color: isLatest ? '#D84A3A' : '#D99A2B', // danger red or amber
+            weight: isLatest ? 2.5 : 1.2,
+            fillColor: isLatest ? '#D84A3A' : '#D99A2B',
+            fillOpacity: isLatest ? 0.35 : 0.12,
             dashArray: isLatest ? undefined : '3, 3',
           };
         },
@@ -98,9 +98,9 @@ export const SimulationLayer: React.FC<SimulationLayerProps> = ({
           if (props) {
             const stepNum = props.step_hour ?? props.step_number;
             layer.bindTooltip(
-              `<div class="font-sans text-xs">
-                <strong>Hour ${stepNum} (T+${props.elapsed_minutes}m)</strong><br/>
-                Burned Area: <strong>${props.cumulative_burned_area_ha.toFixed(1)} ha</strong><br/>
+              `<div class="font-mono text-xs leading-tight">
+                <strong class="uppercase text-txt-primary">Hour ${stepNum} (T+${props.elapsed_minutes}m)</strong><br/>
+                Burned Area: <strong class="text-danger font-semibold">${props.cumulative_burned_area_ha.toFixed(1)} ha</strong><br/>
                 ${props.spread_velocity_kmh !== undefined ? `Velocity: ${props.spread_velocity_kmh.toFixed(1)} km/h<br/>` : ''}
                 Active Front: ${props.active_front_cells_count || 0} cells
               </div>`,
@@ -108,22 +108,22 @@ export const SimulationLayer: React.FC<SimulationLayerProps> = ({
             );
 
             layer.bindPopup(
-              `<div class="p-1 font-sans text-xs space-y-1">
-                <div class="font-bold text-amber-400 border-b border-slate-700 pb-1">
-                  Simulation Step ${stepNum} (T+${props.elapsed_minutes} min)
+              `<div class="p-1 font-mono text-xs space-y-1">
+                <div class="font-bold text-amber border-b border-ops-border pb-1 uppercase tracking-wider text-[11px]">
+                  Spread Step ${stepNum} (T+${props.elapsed_minutes}m)
                 </div>
-                <div class="font-mono text-slate-200">
-                  Cumulative Burned: <span class="text-rose-400 font-bold">${props.cumulative_burned_area_ha.toFixed(1)} ha</span>
+                <div class="text-txt-primary">
+                  Cumulative Burned: <span class="text-danger font-bold">${props.cumulative_burned_area_ha.toFixed(1)} ha</span>
                 </div>
                 ${props.spread_velocity_kmh !== undefined ? `
-                <div class="font-mono text-slate-300">
+                <div class="text-txt-secondary">
                   Spread Velocity: ${props.spread_velocity_kmh.toFixed(2)} km/h
                 </div>` : ''}
                 ${props.spread_direction_deg !== undefined ? `
-                <div class="font-mono text-slate-300">
+                <div class="text-txt-secondary">
                   Spread Direction: ${props.spread_direction_deg.toFixed(0)}°
                 </div>` : ''}
-                <div class="font-mono text-slate-300">
+                <div class="text-txt-muted text-[10px]">
                   Active Front: ${props.active_front_cells_count || 0} cells
                 </div>
               </div>`

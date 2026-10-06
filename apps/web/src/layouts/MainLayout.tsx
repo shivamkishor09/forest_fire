@@ -23,7 +23,7 @@ export const MainLayout: React.FC<MainLayoutProps> = ({
   };
 
   return (
-    <div className="h-screen w-screen flex flex-col bg-slate-950 overflow-hidden font-sans">
+    <div className="h-screen w-screen flex flex-col bg-ops-bg overflow-hidden font-sans">
       <Header currentView={tabTitles[currentTab]} />
       <div className="flex-1 flex overflow-hidden">
         <Sidebar currentTab={currentTab} onSelectTab={onSelectTab} />

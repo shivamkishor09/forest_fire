@@ -16,8 +16,8 @@ export const RiskSummaryCard: React.FC<RiskSummaryCardProps> = ({
 }) => {
   if (isLoading) {
     return (
-      <div className={`p-4 bg-slate-900/90 border border-slate-800 rounded-xl ${className}`}>
-        <Skeleton className="h-4 w-32 mb-3" />
+      <div className={`p-3 bg-ops-panel border border-ops-border rounded-[3px] ${className}`}>
+        <Skeleton className="h-4 w-32 mb-2" />
         <Skeleton className="h-8 w-full mb-2" />
         <Skeleton className="h-4 w-48" />
       </div>
@@ -26,8 +26,8 @@ export const RiskSummaryCard: React.FC<RiskSummaryCardProps> = ({
 
   if (!summary) {
     return (
-      <div className={`p-4 bg-slate-900/90 border border-slate-800 rounded-xl text-xs text-slate-400 ${className}`}>
-        Risk summary unavailable for selected region.
+      <div className={`p-3 bg-ops-panel border border-ops-border rounded-[3px] text-xs text-txt-muted ${className}`}>
+        Risk summary unavailable.
       </div>
     );
   }
@@ -41,30 +41,30 @@ export const RiskSummaryCard: React.FC<RiskSummaryCardProps> = ({
 
   return (
     <div
-      className={`p-4 bg-slate-900/95 border border-slate-700/80 rounded-xl shadow-xl backdrop-blur-md text-xs ${className}`}
+      className={`p-3 bg-ops-panel/95 border border-ops-border rounded-[3px] shadow-lg text-xs ${className}`}
     >
-      <div className="flex items-center justify-between pb-2 border-b border-slate-800 mb-3">
+      <div className="flex items-center justify-between pb-1.5 border-b border-ops-border mb-2">
         <div>
-          <h4 className="font-semibold text-slate-100">Regional Risk Distribution</h4>
-          <span className="text-[10px] font-mono text-slate-400">
-            Target: {summary.target_date || 'Current Date'}
+          <h4 className="font-semibold text-txt-primary">REGIONAL RISK</h4>
+          <span className="text-[10px] font-mono text-txt-muted">
+            TARGET: {summary.target_date || '2026-10-06'}
           </span>
         </div>
         <Badge variant={summary.extreme_risk_cells > 0 ? 'danger' : 'warning'} size="sm">
-          Mean: {(summary.mean_probability * 100).toFixed(1)}%
+          MEAN: {(summary.mean_probability * 100).toFixed(1)}%
         </Badge>
       </div>
 
-      <div className="grid grid-cols-2 gap-3 mb-3">
-        <div className="bg-slate-950/60 p-2.5 rounded-lg border border-slate-800">
-          <span className="text-[10px] text-slate-400 block">Total Grid Cells</span>
-          <span className="text-base font-bold text-slate-100 font-mono">
+      <div className="grid grid-cols-2 gap-2 mb-2.5">
+        <div className="bg-ops-subtle p-2 rounded-[2px] border border-ops-border">
+          <span className="text-[10px] text-txt-muted block">GRID CELLS</span>
+          <span className="text-sm font-bold text-txt-primary font-mono">
             {(summary.total_cells ?? 0).toLocaleString()}
           </span>
         </div>
-        <div className="bg-slate-950/60 p-2.5 rounded-lg border border-slate-800">
-          <span className="text-[10px] text-slate-400 block">High/Extreme Cells</span>
-          <span className="text-base font-bold text-rose-400 font-mono">
+        <div className="bg-ops-subtle p-2 rounded-[2px] border border-ops-border">
+          <span className="text-[10px] text-txt-muted block">ELEVATED CELLS</span>
+          <span className="text-sm font-bold text-danger font-mono">
             {((summary.high_risk_cells ?? 0) + (summary.extreme_risk_cells ?? 0)).toLocaleString()}
           </span>
         </div>
@@ -72,23 +72,24 @@ export const RiskSummaryCard: React.FC<RiskSummaryCardProps> = ({
 
       {/* Distribution progress bar */}
       <div>
-        <div className="flex justify-between text-[10px] font-mono text-slate-400 mb-1">
-          <span>Class Breakdown:</span>
-          <span>100% Partition</span>
+        <div className="flex justify-between text-[10px] font-mono text-txt-muted mb-1">
+          <span>CLASS BREAKDOWN</span>
+          <span>100% COVERAGE</span>
         </div>
-        <div className="h-2 w-full rounded-full overflow-hidden flex bg-slate-800">
-          <div style={{ width: `${lowPct}%` }} className="bg-emerald-500 h-full" title={`Low: ${lowPct}%`} />
-          <div style={{ width: `${modPct}%` }} className="bg-amber-500 h-full" title={`Moderate: ${modPct}%`} />
-          <div style={{ width: `${highPct}%` }} className="bg-orange-500 h-full" title={`High: ${highPct}%`} />
-          <div style={{ width: `${extPct}%` }} className="bg-rose-500 h-full" title={`Extreme: ${extPct}%`} />
+        <div className="h-1.5 w-full rounded-[1px] overflow-hidden flex bg-ops-subtle">
+          <div style={{ width: `${lowPct}%` }} className="bg-forest h-full" title={`Low: ${lowPct}%`} />
+          <div style={{ width: `${modPct}%` }} className="bg-amber h-full" title={`Moderate: ${modPct}%`} />
+          <div style={{ width: `${highPct}%` }} className="bg-[#E06D2E] h-full" title={`High: ${highPct}%`} />
+          <div style={{ width: `${extPct}%` }} className="bg-danger h-full" title={`Extreme: ${extPct}%`} />
         </div>
-        <div className="grid grid-cols-4 gap-1 text-[9px] font-mono text-slate-400 mt-2 text-center">
-          <span className="text-emerald-400">{lowPct}% Low</span>
-          <span className="text-amber-400">{modPct}% Mod</span>
-          <span className="text-orange-400">{highPct}% High</span>
-          <span className="text-rose-400">{extPct}% Ext</span>
+        <div className="grid grid-cols-4 gap-1 text-[9px] font-mono text-txt-muted mt-1.5 text-center">
+          <span className="text-forest">{lowPct}% Low</span>
+          <span className="text-amber">{modPct}% Mod</span>
+          <span className="text-[#E06D2E]">{highPct}% High</span>
+          <span className="text-danger">{extPct}% Ext</span>
         </div>
       </div>
     </div>
   );
 };
+

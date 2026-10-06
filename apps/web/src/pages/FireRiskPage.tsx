@@ -13,6 +13,7 @@ import { RegionSummary, RiskPredictionProperties, IgnitionPoint } from '../types
 import { GeoJSONFeature, PolygonGeometry, MultiPolygonGeometry } from '../types/geo';
 import { LoadingSpinner } from '../components/feedback/LoadingSpinner';
 import { ErrorAlert } from '../components/feedback/ErrorAlert';
+import { TargetIcon, RefreshCwIcon } from '../components/common/Icons';
 
 export interface FireRiskPageProps {
   selectedRegion: RegionSummary | null;
@@ -57,7 +58,6 @@ export const FireRiskPage: React.FC<FireRiskPageProps> = ({
   const handleSimulateFromCell = (cell: RiskPredictionProperties) => {
     if (!onNavigateToSimulation) return;
 
-    // Extract centroid coordinate from geometry if available
     let lat = 30.2104;
     let lon = 78.7523;
 
@@ -77,45 +77,49 @@ export const FireRiskPage: React.FC<FireRiskPageProps> = ({
   };
 
   return (
-    <div className="flex-1 flex flex-col h-full overflow-hidden relative">
-      {/* Top Filter and Controls Bar */}
-      <div className="h-12 bg-slate-900 border-b border-slate-800 px-4 flex flex-wrap items-center justify-between shrink-0 text-xs z-10 gap-2">
-        <div className="flex items-center space-x-2.5">
-          <span className="font-semibold text-slate-300">24h Susceptibility Forecast:</span>
+    <div className="flex-1 flex flex-col h-full overflow-hidden relative bg-ops-bg">
+      {/* Top Controls Ribbon */}
+      <div className="h-10 bg-ops-subtle border-b border-ops-border px-4 flex flex-wrap items-center justify-between shrink-0 text-xs z-10 gap-2">
+        <div className="flex items-center space-x-2">
+          <span className="font-mono text-[11px] font-semibold text-txt-primary uppercase tracking-wide">
+            24h Susceptibility Forecast:
+          </span>
           <input
             type="date"
             value={forecastDate}
             onChange={(e) => setForecastDate(e.target.value)}
-            className="bg-slate-800 border border-slate-700 rounded px-2.5 py-1 text-slate-200 font-mono text-xs focus:ring-1 focus:ring-amber-500"
+            className="bg-ops-panel border border-ops-border rounded-[2px] px-2 py-0.5 text-txt-primary font-mono text-xs focus:outline-none focus:border-forest"
           />
           <button
             onClick={recomputeRisk}
             disabled={isLoading || !selectedRegion}
-            className="px-2.5 py-1 rounded bg-amber-600/90 hover:bg-amber-500 text-white font-medium text-[11px] transition-colors disabled:opacity-50 flex items-center space-x-1"
-            title="Execute XGBoost risk inference for selected sector"
+            className="px-2.5 py-1 rounded-[2px] bg-forest hover:bg-forest-hover text-txt-primary font-semibold text-[11px] transition-colors disabled:opacity-40 flex items-center space-x-1 border border-forest-border"
+            title="Execute XGBoost risk inference"
           >
-            <span>⚡ Run Model</span>
+            <RefreshCwIcon className="w-3 h-3" />
+            <span>RUN MODEL</span>
           </button>
           <button
             onClick={handleFocusHighestRisk}
             disabled={isLoading || !summary}
-            className="px-2.5 py-1 rounded bg-slate-800 hover:bg-slate-700 text-amber-400 border border-slate-700 text-[11px] font-semibold transition-colors disabled:opacity-50"
-            title="Locate cell with maximum predicted fire probability"
+            className="px-2.5 py-1 rounded-[2px] bg-ops-surface hover:bg-ops-hover text-txt-secondary border border-ops-border text-[11px] font-medium transition-colors disabled:opacity-40 flex items-center space-x-1"
+            title="Locate cell with maximum fire risk"
           >
-            🎯 Focus Highest Risk
+            <TargetIcon className="w-3 h-3 text-amber" />
+            <span>LOCATE PEAK</span>
           </button>
         </div>
 
-        <div className="flex items-center space-x-1.5">
-          <span className="text-slate-400 text-[11px]">Filter:</span>
+        <div className="flex items-center space-x-1">
+          <span className="text-txt-muted font-mono text-[11px] mr-1">FILTER:</span>
           {['ALL', 'EXTREME', 'HIGH', 'MODERATE', 'LOW'].map((lvl) => (
             <button
               key={lvl}
               onClick={() => setSelectedClassFilter(lvl)}
-              className={`px-2 py-1 rounded text-[10px] font-semibold transition-colors ${
+              className={`px-2 py-0.5 rounded-[2px] text-[10px] font-mono font-medium transition-colors border ${
                 selectedClassFilter === lvl
-                  ? 'bg-amber-600 text-white shadow-sm'
-                  : 'bg-slate-800 text-slate-400 hover:text-slate-200'
+                  ? 'bg-forest text-txt-primary font-bold border-forest'
+                  : 'bg-ops-panel text-txt-muted hover:text-txt-primary border-ops-border'
               }`}
             >
               {lvl}
@@ -124,10 +128,10 @@ export const FireRiskPage: React.FC<FireRiskPageProps> = ({
         </div>
       </div>
 
-      {/* Main Map Canvas */}
+      {/* Main Map View */}
       <div className="flex-1 relative overflow-hidden">
         {isLoading && (
-          <div className="absolute inset-0 z-30 bg-slate-950/70 backdrop-blur-sm flex items-center justify-center">
+          <div className="absolute inset-0 z-30 bg-ops-bg/80 flex items-center justify-center">
             <LoadingSpinner label="Running 500m XGBoost risk inference..." />
           </div>
         )}
@@ -135,7 +139,7 @@ export const FireRiskPage: React.FC<FireRiskPageProps> = ({
         {error && (
           <div className="absolute top-4 left-1/2 -translate-x-1/2 z-30 w-full max-w-md px-4">
             <ErrorAlert
-              title="Risk Prediction Service Unavailable"
+              title="Risk Prediction Service"
               message={error}
               onRetry={reload}
             />
@@ -150,35 +154,34 @@ export const FireRiskPage: React.FC<FireRiskPageProps> = ({
             onSelectCell={(cellProps: RiskPredictionProperties) => setSelectedCell(cellProps)}
           />
 
-          {/* Floating Controls */}
-          <div className="absolute top-4 right-4 z-[400] flex flex-col space-y-2 pointer-events-auto">
+          {/* Unified Map Controls (Top-Right) */}
+          <div className="absolute top-3 right-3 z-[400] flex flex-col space-y-2 pointer-events-auto">
             <LayerControls />
             <MapControls />
           </div>
 
           {/* Left Floating Info Panels */}
-          <div className="absolute top-4 left-4 z-[400] flex flex-col space-y-2.5 pointer-events-auto max-w-xs">
-            {/* Tab switch between Summary and Distribution Chart */}
-            <div className="flex bg-slate-900/90 border border-slate-700/80 rounded-lg p-0.5 text-[11px]">
+          <div className="absolute top-3 left-3 z-[400] flex flex-col space-y-2 pointer-events-auto max-w-xs">
+            <div className="flex bg-ops-panel border border-ops-border rounded-[2px] p-0.5 text-[11px] font-mono">
               <button
                 onClick={() => setActiveSideTab('summary')}
-                className={`flex-1 py-1 rounded text-center font-medium transition-colors ${
+                className={`flex-1 py-1 rounded-[1px] text-center font-medium transition-colors ${
                   activeSideTab === 'summary'
-                    ? 'bg-amber-600 text-white font-bold'
-                    : 'text-slate-400 hover:text-slate-200'
+                    ? 'bg-ops-surface text-txt-primary font-semibold'
+                    : 'text-txt-muted hover:text-txt-primary'
                 }`}
               >
-                Summary
+                SUMMARY
               </button>
               <button
                 onClick={() => setActiveSideTab('distribution')}
-                className={`flex-1 py-1 rounded text-center font-medium transition-colors ${
+                className={`flex-1 py-1 rounded-[1px] text-center font-medium transition-colors ${
                   activeSideTab === 'distribution'
-                    ? 'bg-amber-600 text-white font-bold'
-                    : 'text-slate-400 hover:text-slate-200'
+                    ? 'bg-ops-surface text-txt-primary font-semibold'
+                    : 'text-txt-muted hover:text-txt-primary'
                 }`}
               >
-                Chart
+                DISTRIBUTION
               </button>
             </div>
 
@@ -202,7 +205,7 @@ export const FireRiskPage: React.FC<FireRiskPageProps> = ({
           </div>
 
           {/* Bottom Left Legend */}
-          <div className="absolute bottom-6 left-4 z-[400] pointer-events-auto">
+          <div className="absolute bottom-3 left-3 z-[400] pointer-events-auto">
             <RiskLegend />
           </div>
         </MapContainer>
@@ -210,3 +213,4 @@ export const FireRiskPage: React.FC<FireRiskPageProps> = ({
     </div>
   );
 };
+

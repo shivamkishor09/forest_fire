@@ -1,7 +1,7 @@
 import React from 'react';
 import { FireHotspotProperties } from '../../../types/domain';
 import { Badge } from '../../../components/ui/Badge';
-import { Button } from '../../../components/ui/Button';
+import { TargetIcon } from '../../../components/common/Icons';
 
 export interface FireDetailsCardProps {
   fire: FireHotspotProperties | null;
@@ -20,32 +20,32 @@ export const FireDetailsCard: React.FC<FireDetailsCardProps> = ({
 
   return (
     <div
-      className={`bg-slate-900/95 border border-slate-700/80 rounded-xl p-4 shadow-2xl backdrop-blur-md text-xs ${className}`}
+      className={`bg-ops-panel border border-ops-border rounded-xs p-3.5 shadow-2xl text-xs space-y-2.5 ${className}`}
     >
-      <div className="flex items-center justify-between pb-3 border-b border-slate-800 mb-3">
-        <div className="flex items-center space-x-2">
-          <span className="text-base">🔥</span>
-          <div>
-            <h4 className="font-semibold text-slate-100">Thermal Hotspot Telemetry</h4>
-            <span className="text-[10px] font-mono text-slate-400">ID: {fire.id}</span>
-          </div>
+      <div className="flex items-center justify-between pb-2 border-b border-ops-border bg-ops-subtle -mx-3.5 -mt-3.5 p-3 rounded-t-xs">
+        <div>
+          <h4 className="font-semibold text-txt-primary uppercase tracking-wider font-mono text-[11px]">Hotspot Telemetry</h4>
+          <span className="text-[10px] font-mono text-txt-muted">ID: {fire.id}</span>
         </div>
         <button
           onClick={onClose}
-          className="text-slate-400 hover:text-slate-200 text-sm p-1 rounded hover:bg-slate-800"
+          className="text-txt-muted hover:text-txt-primary text-xs p-1 rounded-xs hover:bg-ops-surface"
           aria-label="Close details"
         >
-          ✕
+          <svg className="w-3.5 h-3.5" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2">
+            <line x1="18" y1="6" x2="6" y2="18"></line>
+            <line x1="6" y1="6" x2="18" y2="18"></line>
+          </svg>
         </button>
       </div>
 
-      <div className="space-y-2.5 font-mono text-[11px] text-slate-300">
-        <div className="flex justify-between items-center py-1 border-b border-slate-800/60">
-          <span className="text-slate-400">Sensor / Satellite:</span>
-          <Badge variant="info" size="sm">{fire.satellite || 'MODIS/VIIRS'}</Badge>
+      <div className="space-y-1.5 font-mono text-[11px] text-txt-secondary">
+        <div className="flex justify-between items-center py-0.5 border-b border-ops-border">
+          <span className="text-txt-muted">Sensor:</span>
+          <Badge variant="neutral" size="sm">{fire.satellite || 'MODIS/VIIRS'}</Badge>
         </div>
-        <div className="flex justify-between items-center py-1 border-b border-slate-800/60">
-          <span className="text-slate-400">Confidence Rating:</span>
+        <div className="flex justify-between items-center py-0.5 border-b border-ops-border">
+          <span className="text-txt-muted">Confidence:</span>
           <Badge
             variant={fire.confidence === 'high' ? 'danger' : 'warning'}
             size="sm"
@@ -53,56 +53,52 @@ export const FireDetailsCard: React.FC<FireDetailsCardProps> = ({
             {fire.confidence?.toUpperCase() || 'NOMINAL'}
           </Badge>
         </div>
-        <div className="flex justify-between items-center py-1 border-b border-slate-800/60">
-          <span className="text-slate-400">Coordinates:</span>
-          <span className="text-slate-200">
+        <div className="flex justify-between items-center py-0.5 border-b border-ops-border">
+          <span className="text-txt-muted">Coordinates:</span>
+          <span className="text-txt-primary">
             {fire.latitude !== undefined && fire.longitude !== undefined
               ? `${fire.latitude.toFixed(4)}°N, ${fire.longitude.toFixed(4)}°E`
               : 'Point geometry'}
           </span>
         </div>
-        <div className="flex justify-between items-center py-1 border-b border-slate-800/60">
-          <span className="text-slate-400">Fire Radiative Power:</span>
-          <span className="font-bold text-amber-400">
-            {fire.frp_mw !== null ? `${fire.frp_mw.toFixed(1)} MW` : 'Not available'}
+        <div className="flex justify-between items-center py-0.5 border-b border-ops-border">
+          <span className="text-txt-muted">Radiative Power:</span>
+          <span className="font-bold text-amber">
+            {fire.frp_mw !== null ? `${fire.frp_mw.toFixed(1)} MW` : 'N/A'}
           </span>
         </div>
-        <div className="flex justify-between items-center py-1 border-b border-slate-800/60">
-          <span className="text-slate-400">Brightness Temperature:</span>
-          <span className="text-slate-100">
+        <div className="flex justify-between items-center py-0.5 border-b border-ops-border">
+          <span className="text-txt-muted">Brightness Temp:</span>
+          <span className="text-txt-primary">
             {fire.brightness_temperature_kelvin !== null
               ? `${fire.brightness_temperature_kelvin.toFixed(1)} K`
-              : 'Not available'}
+              : 'N/A'}
           </span>
         </div>
-        <div className="flex justify-between items-center py-1 border-b border-slate-800/60">
-          <span className="text-slate-400">Detection Timestamp:</span>
-          <span className="text-slate-200">
-            {new Date(fire.detection_time).toLocaleString()}
-          </span>
-        </div>
-        <div className="flex justify-between items-center py-1">
-          <span className="text-slate-400">Operational Status:</span>
-          <span className="text-rose-400 uppercase font-semibold">
-            {fire.status || 'Active Hotspot'}
+        <div className="flex justify-between items-center py-0.5">
+          <span className="text-txt-muted">Observed:</span>
+          <span className="text-txt-secondary">
+            {new Date(fire.detection_time).toLocaleTimeString([], { hour: '2-digit', minute: '2-digit' })} UTC
           </span>
         </div>
       </div>
 
-      <div className="mt-4 pt-3 border-t border-slate-800 flex items-center space-x-2">
+      <div className="pt-2 border-t border-ops-border flex items-center space-x-2">
         {onSimulateFromFire && (
-          <Button
-            variant="primary"
-            size="sm"
-            className="flex-1 font-semibold text-[11px]"
+          <button
+            className="flex-1 py-1.5 px-2.5 rounded-xs bg-forest hover:bg-forest-light text-txt-primary font-semibold text-[11px] transition-colors flex items-center justify-center space-x-1.5"
             onClick={() => onSimulateFromFire(fire)}
           >
-            ⏳ Simulate Spread
-          </Button>
+            <TargetIcon className="w-3.5 h-3.5" />
+            <span>Simulate Spread</span>
+          </button>
         )}
-        <Button variant="secondary" size="sm" onClick={onClose}>
+        <button
+          className="py-1.5 px-2.5 rounded-xs bg-ops-surface hover:bg-ops-panel text-txt-secondary border border-ops-border text-[11px] transition-colors"
+          onClick={onClose}
+        >
           Dismiss
-        </Button>
+        </button>
       </div>
     </div>
   );

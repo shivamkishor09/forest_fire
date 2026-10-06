@@ -22,39 +22,35 @@ export function getRiskStyle(riskClass: RiskClass | string) {
 }
 
 /**
- * Creates an animated SVG hotspot marker for active satellite fires
+ * Creates a clean geometric hotspot marker for active satellite fire detections
  */
 export function createHotspotIcon(confidence: string = 'nominal', frp: number | null = null): L.DivIcon {
   const isHigh = confidence === 'high' || (frp !== null && frp > 50);
   const color = isHigh ? '#ef4444' : '#f97316';
-  const pulseClass = isHigh ? 'hotspot-marker-pulse' : '';
 
   const html = `
-    <div class="relative flex items-center justify-center w-7 h-7">
-      <div class="absolute w-6 h-6 rounded-full opacity-75 ${pulseClass}" style="background-color: ${color}40;"></div>
-      <div class="w-4 h-4 rounded-full flex items-center justify-center shadow-lg border-2 border-white" style="background-color: ${color};">
-        <span style="font-size: 8px;">🔥</span>
-      </div>
+    <div style="display: flex; align-items: center; justify-content: center; width: 18px; height: 18px;">
+      <div style="width: 12px; height: 12px; border-radius: 50%; background-color: ${color}; border: 2px solid #ffffff; box-shadow: 0 1px 3px rgba(0,0,0,0.6);"></div>
     </div>
   `;
 
   return L.divIcon({
     html,
     className: 'custom-hotspot-marker',
-    iconSize: [28, 28],
-    iconAnchor: [14, 14],
-    popupAnchor: [0, -14],
+    iconSize: [18, 18],
+    iconAnchor: [9, 9],
+    popupAnchor: [0, -9],
   });
 }
 
 /**
- * Creates an ignition point marker for simulation setup
+ * Creates an ignition origin crosshair marker for simulation setup
  */
 export function createIgnitionIcon(): L.DivIcon {
   const html = `
-    <div class="relative flex items-center justify-center w-8 h-8">
-      <div class="w-6 h-6 rounded-full bg-red-600 border-2 border-white flex items-center justify-center text-white text-xs font-bold shadow-2xl animate-bounce">
-        🎯
+    <div style="display: flex; align-items: center; justify-content: center; width: 22px; height: 22px;">
+      <div style="width: 16px; height: 16px; border-radius: 50%; background-color: #ef4444; border: 2px solid #ffffff; box-shadow: 0 2px 5px rgba(0,0,0,0.6); display: flex; align-items: center; justify-content: center;">
+        <div style="width: 4px; height: 4px; border-radius: 50%; background-color: #ffffff;"></div>
       </div>
     </div>
   `;
@@ -62,9 +58,9 @@ export function createIgnitionIcon(): L.DivIcon {
   return L.divIcon({
     html,
     className: 'custom-ignition-marker',
-    iconSize: [32, 32],
-    iconAnchor: [16, 16],
-    popupAnchor: [0, -16],
+    iconSize: [22, 22],
+    iconAnchor: [11, 11],
+    popupAnchor: [0, -11],
   });
 }
 

@@ -1,0 +1,9 @@
+pydantic>=2.8.0
+pytest>=8.0.0
+numpy>=2.0.0
+pandas>=2.2.0
+geopandas>=1.0.0
+shapely>=2.0.0
+pyproj>=3.6.0
+pyogrio>=0.8.0
+pyarrow>=17.0.0

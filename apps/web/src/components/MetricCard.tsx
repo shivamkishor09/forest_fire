@@ -4,7 +4,7 @@ interface MetricCardProps {
   title: string;
   value: string | number;
   subtitle?: string;
-  icon?: string;
+  icon?: React.ReactNode;
   variant?: 'default' | 'success' | 'warning' | 'danger';
 }
 
@@ -16,22 +16,29 @@ export const MetricCard: React.FC<MetricCardProps> = ({
   variant = 'default',
 }) => {
   const variantStyles = {
-    default: 'border-slate-800 bg-slate-900/80 text-slate-100',
-    success: 'border-emerald-500/30 bg-emerald-950/20 text-emerald-400',
-    warning: 'border-amber-500/30 bg-amber-950/20 text-amber-400',
-    danger: 'border-rose-500/30 bg-rose-950/20 text-rose-400',
+    default: 'border-ops-border bg-ops-panel text-txt-primary',
+    success: 'border-ops-border bg-ops-panel text-txt-primary',
+    warning: 'border-amber/40 bg-amber/10 text-txt-primary',
+    danger: 'border-danger/40 bg-danger/10 text-txt-primary',
+  };
+
+  const badgeColors = {
+    default: 'text-txt-muted',
+    success: 'text-forest',
+    warning: 'text-amber',
+    danger: 'text-danger',
   };
 
   return (
-    <div className={`p-4 rounded-xl border backdrop-blur-sm shadow-sm flex flex-col justify-between ${variantStyles[variant]}`}>
-      <div className="flex items-center justify-between text-xs text-slate-400 font-medium mb-1">
+    <div className={`p-3.5 rounded-xs border flex flex-col justify-between ${variantStyles[variant]}`}>
+      <div className="flex items-center justify-between text-xs text-txt-secondary font-medium mb-1">
         <span>{title}</span>
-        {icon && <span>{icon}</span>}
+        {icon && <span className={badgeColors[variant]}>{icon}</span>}
       </div>
-      <div className="text-2xl font-bold font-mono tracking-tight my-1 text-slate-100">
+      <div className="text-xl font-bold font-mono tracking-tight my-0.5 text-txt-primary">
         {value}
       </div>
-      {subtitle && <div className="text-xs text-slate-400 mt-1">{subtitle}</div>}
+      {subtitle && <div className="text-[11px] text-txt-muted mt-1 truncate">{subtitle}</div>}
     </div>
   );
 };

@@ -1,5 +1,6 @@
 import React from 'react';
 import { Button } from '../ui/Button';
+import { LayersIcon } from '../common/Icons';
 
 export interface EmptyStateProps {
   title: string;
@@ -13,18 +14,20 @@ export interface EmptyStateProps {
 export const EmptyState: React.FC<EmptyStateProps> = ({
   title,
   description,
-  icon = '🗺️',
+  icon,
   actionLabel,
   onAction,
   className = '',
 }) => {
   return (
     <div
-      className={`flex flex-col items-center justify-center p-8 text-center rounded-xl border border-dashed border-slate-800 bg-slate-900/30 ${className}`}
+      className={`flex flex-col items-center justify-center p-8 text-center rounded-xs border border-dashed border-ops-border bg-ops-panel/50 ${className}`}
     >
-      <div className="text-3xl mb-3 select-none">{icon}</div>
-      <h4 className="text-sm font-semibold text-slate-200">{title}</h4>
-      {description && <p className="text-xs text-slate-400 mt-1 max-w-sm">{description}</p>}
+      <div className="mb-3 text-txt-muted select-none">
+        {icon || <LayersIcon className="w-8 h-8 text-txt-muted" />}
+      </div>
+      <h4 className="text-sm font-semibold text-txt-primary">{title}</h4>
+      {description && <p className="text-xs text-txt-secondary mt-1 max-w-sm">{description}</p>}
       {actionLabel && onAction && (
         <div className="mt-4">
           <Button variant="secondary" size="sm" onClick={onAction}>
@@ -35,3 +38,4 @@ export const EmptyState: React.FC<EmptyStateProps> = ({
     </div>
   );
 };
+

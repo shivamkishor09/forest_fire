@@ -1,0 +1,267 @@
+"""Rich feature specification and schema metadata for risk models."""
+
+from typing import Any, Dict, List, Optional
+from pydantic import BaseModel, Field
+from .ordering import NUMERICAL_FEATURES, CATEGORICAL_FEATURES, KNOWN_FUEL_CLASSES
+
+
+class FeatureSpec(BaseModel):
+    """Specification describing a single feature's physical meaning and provenance."""
+    name: str
+    data_type: str
+    unit: Optional[str] = None
+    source: str
+    temporal_meaning: str
+    spatial_meaning: str
+    min_val: Optional[float] = None
+    max_val: Optional[float] = None
+    missing_policy: str
+
+
+FEATURE_SPECIFICATIONS: Dict[str, FeatureSpec] = {
+    "elevation_m": FeatureSpec(
+        name="elevation_m",
+        data_type="float",
+        unit="m",
+        source="ISRO CartoDEM / NASA SRTM 30m",
+        temporal_meaning="Static terrain topography",
+        spatial_meaning="Mean elevation above sea level across 500m cell",
+        min_val=-500.0,
+        max_val=9000.0,
+        missing_policy="Regional default: 1200.0m",
+    ),
+    "slope_deg": FeatureSpec(
+        name="slope_deg",
+        data_type="float",
+        unit="degrees",
+        source="ISRO CartoDEM / NASA SRTM 30m",
+        temporal_meaning="Static terrain topography",
+        spatial_meaning="Terrain slope gradient (0=flat, 90=cliff)",
+        min_val=0.0,
+        max_val=90.0,
+        missing_policy="Regional default: 15.0 deg",
+    ),
+    "aspect_deg": FeatureSpec(
+        name="aspect_deg",
+        data_type="float",
+        unit="degrees",
+        source="ISRO CartoDEM / NASA SRTM 30m",
+        temporal_meaning="Static terrain topography",
+        spatial_meaning="Compass facing direction (0=North, 90=East)",
+        min_val=0.0,
+        max_val=360.0,
+        missing_policy="Regional default: 180.0 deg",
+    ),
+    "aspect_sin": FeatureSpec(
+        name="aspect_sin",
+        data_type="float",
+        unit="unit circle",
+        source="Derived from aspect_deg",
+        temporal_meaning="Static terrain topography",
+        spatial_meaning="sin(aspect): East-West facing component",
+        min_val=-1.0,
+        max_val=1.0,
+        missing_policy="Calculated from aspect or 0.0",
+    ),
+    "aspect_cos": FeatureSpec(
+        name="aspect_cos",
+        data_type="float",
+        unit="unit circle",
+        source="Derived from aspect_deg",
+        temporal_meaning="Static terrain topography",
+        spatial_meaning="cos(aspect): North-South solar exposure component",
+        min_val=-1.0,
+        max_val=1.0,
+        missing_policy="Calculated from aspect or -1.0",
+    ),
+    "fuel_type": FeatureSpec(
+        name="fuel_type",
+        data_type="categorical",
+        unit="class",
+        source="ISRO Bhuvan LULC / Sentinel-2",
+        temporal_meaning="Seasonal / annual land-cover classification",
+        spatial_meaning="Dominant combustible vegetation category in cell",
+        missing_policy="Fallback to UNKNOWN / BROADLEAF_MODERATE_LITTER",
+    ),
+    "ndvi": FeatureSpec(
+        name="ndvi",
+        data_type="float",
+        unit="unitless index [-1, 1]",
+        source="Sentinel-2 MSI / Landsat-8",
+        temporal_meaning="Daily / weekly composite up to T_ref",
+        spatial_meaning="Normalized Difference Vegetation Index (greenness/canopy density)",
+        min_val=-1.0,
+        max_val=1.0,
+        missing_policy="Regional default: 0.40",
+    ),
+    "ndwi": FeatureSpec(
+        name="ndwi",
+        data_type="float",
+        unit="unitless index [-1, 1]",
+        source="Sentinel-2 MSI / Landsat-8",
+        temporal_meaning="Daily / weekly composite up to T_ref",
+        spatial_meaning="Normalized Difference Water Index (canopy fuel moisture)",
+        min_val=-1.0,
+        max_val=1.0,
+        missing_policy="Regional default: -0.10",
+    ),
+    "temperature_c": FeatureSpec(
+        name="temperature_c",
+        data_type="float",
+        unit="deg C",
+        source="IMD AWS / ECMWF ERA5",
+        temporal_meaning="24h peak/mean observation ending at T_ref",
+        spatial_meaning="Surface 2m air temperature",
+        min_val=-40.0,
+        max_val=65.0,
+        missing_policy="Regional default: 30.0 C",
+    ),
+    "relative_humidity_pct": FeatureSpec(
+        name="relative_humidity_pct",
+        data_type="float",
+        unit="percent",
+        source="IMD AWS / ECMWF ERA5",
+        temporal_meaning="24h minimum/mean observation ending at T_ref",
+        spatial_meaning="Surface relative humidity",
+        min_val=0.0,
+        max_val=100.0,
+        missing_policy="Regional default: 35.0%",
+    ),
+    "wind_speed_ms": FeatureSpec(
+        name="wind_speed_ms",
+        data_type="float",
+        unit="m/s",
+        source="IMD AWS / ECMWF ERA5",
+        temporal_meaning="24h peak/mean observation ending at T_ref",
+        spatial_meaning="10m surface wind speed",
+        min_val=0.0,
+        max_val=80.0,
+        missing_policy="Regional default: 3.5 m/s",
+    ),
+    "wind_direction_deg": FeatureSpec(
+        name="wind_direction_deg",
+        data_type="float",
+        unit="degrees",
+        source="IMD AWS / ECMWF ERA5",
+        temporal_meaning="Dominant wind direction azimuth at T_ref",
+        spatial_meaning="Compass heading from which wind blows",
+        min_val=0.0,
+        max_val=360.0,
+        missing_policy="Regional default: 180.0 deg",
+    ),
+    "wind_u_ms": FeatureSpec(
+        name="wind_u_ms",
+        data_type="float",
+        unit="m/s",
+        source="Derived from wind speed and direction",
+        temporal_meaning="Zonal wind vector at T_ref",
+        spatial_meaning="West-to-East wind component",
+        min_val=-80.0,
+        max_val=80.0,
+        missing_policy="Derived from speed/dir or 0.0",
+    ),
+    "wind_v_ms": FeatureSpec(
+        name="wind_v_ms",
+        data_type="float",
+        unit="m/s",
+        source="Derived from wind speed and direction",
+        temporal_meaning="Meridional wind vector at T_ref",
+        spatial_meaning="South-to-North wind component",
+        min_val=-80.0,
+        max_val=80.0,
+        missing_policy="Derived from speed/dir or -3.5",
+    ),
+    "precipitation_24h_mm": FeatureSpec(
+        name="precipitation_24h_mm",
+        data_type="float",
+        unit="mm",
+        source="IMD AWS / ECMWF ERA5",
+        temporal_meaning="24h accumulated rainfall ending at T_ref",
+        spatial_meaning="Precipitation depth in cell",
+        min_val=0.0,
+        max_val=1500.0,
+        missing_policy="Default: 0.0 mm",
+    ),
+    "precipitation_7d_mm": FeatureSpec(
+        name="precipitation_7d_mm",
+        data_type="float",
+        unit="mm",
+        source="IMD AWS / ECMWF ERA5",
+        temporal_meaning="7-day rolling accumulated rainfall ending at T_ref",
+        spatial_meaning="Antecedent drought/moisture precursor",
+        min_val=0.0,
+        max_val=3500.0,
+        missing_policy="Default: 0.0 mm",
+    ),
+    "fwi": FeatureSpec(
+        name="fwi",
+        data_type="float",
+        unit="unitless index",
+        source="Canadian FWI System calculator",
+        temporal_meaning="Fire Weather Index evaluated at T_ref",
+        spatial_meaning="Fireline intensity rating from temp, rh, wind, rain",
+        min_val=0.0,
+        max_val=200.0,
+        missing_policy="Calculated or default 25.0",
+    ),
+    "fire_count_7d": FeatureSpec(
+        name="fire_count_7d",
+        data_type="int",
+        unit="detections",
+        source="NASA MODIS / VIIRS active fires",
+        temporal_meaning="Total thermal anomalies in cell during past 7 days (t <= T_ref)",
+        spatial_meaning="Recent ignition persistence in cell",
+        min_val=0.0,
+        max_val=10000.0,
+        missing_policy="Default: 0",
+    ),
+    "fire_count_30d": FeatureSpec(
+        name="fire_count_30d",
+        data_type="int",
+        unit="detections",
+        source="NASA MODIS / VIIRS active fires",
+        temporal_meaning="Total thermal anomalies in cell during past 30 days (t <= T_ref)",
+        spatial_meaning="Seasonal burn frequency in cell",
+        min_val=0.0,
+        max_val=10000.0,
+        missing_policy="Default: 0",
+    ),
+    "days_since_last_fire": FeatureSpec(
+        name="days_since_last_fire",
+        data_type="float",
+        unit="days",
+        source="Historical satellite record",
+        temporal_meaning="Elapsed time since most recent fire detection in cell (t <= T_ref)",
+        spatial_meaning="Time-dependent fuel accumulation indicator",
+        min_val=0.0,
+        max_val=10000.0,
+        missing_policy="Censored default: 365.0 days",
+    ),
+    "dist_to_recent_fire_m": FeatureSpec(
+        name="dist_to_recent_fire_m",
+        data_type="float",
+        unit="meters",
+        source="NASA MODIS / VIIRS active fires",
+        temporal_meaning="Distance to nearest regional active fire within lookback (t <= T_ref)",
+        spatial_meaning="Spatial fire front proximity",
+        min_val=0.0,
+        max_val=500000.0,
+        missing_policy="Regional default: 50000.0 m",
+    ),
+}
+
+
+class RiskFeatureSchema(BaseModel):
+    """Container for serializing complete feature schema to JSON artifact."""
+    version: str = "v1.0"
+    numerical_features: List[str] = NUMERICAL_FEATURES
+    categorical_features: List[str] = CATEGORICAL_FEATURES
+    known_fuel_classes: List[str] = KNOWN_FUEL_CLASSES
+    specifications: Dict[str, FeatureSpec] = FEATURE_SPECIFICATIONS
+
+    def get_feature_bounds(self) -> Dict[str, tuple]:
+        return {
+            name: (spec.min_val, spec.max_val)
+            for name, spec in self.specifications.items()
+            if spec.min_val is not None and spec.max_val is not None
+        }

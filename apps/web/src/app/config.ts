@@ -9,22 +9,30 @@ export const APP_CONFIG = {
   // Tile layers
   tileLayers: {
     darkMatter: {
-      url: 'https://{s}.basemaps.cartocdn.com/dark_all/{z}/{x}/{y}{r}.png',
-      attribution:
-        '&copy; <a href="https://www.openstreetmap.org/copyright">OpenStreetMap</a> contributors &copy; <a href="https://carto.com/attributions">CARTO</a>',
+      url: import.meta.env.VITE_MAPBOX_ACCESS_TOKEN
+        ? `https://api.mapbox.com/styles/v1/mapbox/dark-v11/tiles/256/{z}/{x}/{y}?access_token=${import.meta.env.VITE_MAPBOX_ACCESS_TOKEN}`
+        : 'https://{s}.tile.openstreetmap.org/{z}/{x}/{y}.png',
+      attribution: import.meta.env.VITE_MAPBOX_ACCESS_TOKEN
+        ? '&copy; <a href="https://www.mapbox.com/about/maps/">Mapbox</a> &copy; <a href="http://www.openstreetmap.org/copyright">OpenStreetMap</a>'
+        : '&copy; <a href="https://www.openstreetmap.org/copyright">OpenStreetMap</a> contributors',
       maxZoom: 19,
     },
     osm: {
-      url: 'https://{s}.tile.openstreetmap.org/{z}/{x}/{y}.png',
+      url: import.meta.env.VITE_MAPBOX_ACCESS_TOKEN
+        ? `https://api.mapbox.com/styles/v1/mapbox/outdoors-v12/tiles/256/{z}/{x}/{y}?access_token=${import.meta.env.VITE_MAPBOX_ACCESS_TOKEN}`
+        : 'https://{s}.tile.openstreetmap.org/{z}/{x}/{y}.png',
       attribution:
         '&copy; <a href="https://www.openstreetmap.org/copyright">OpenStreetMap</a> contributors',
       maxZoom: 19,
     },
     satellite: {
-      url: 'https://server.arcgisonline.com/ArcGIS/rest/services/World_Imagery/MapServer/tile/{z}/{y}/{x}',
-      attribution:
-        'Tiles &copy; Esri &mdash; Source: Esri, i-cubed, USDA, USGS, AEX, GeoEye, Getmapping, Aerogrid, IGN, IGP, UPR-EGP, and the GIS User Community',
-      maxZoom: 18,
+      url: import.meta.env.VITE_MAPBOX_ACCESS_TOKEN
+        ? `https://api.mapbox.com/styles/v1/mapbox/satellite-streets-v12/tiles/256/{z}/{x}/{y}?access_token=${import.meta.env.VITE_MAPBOX_ACCESS_TOKEN}`
+        : 'https://server.arcgisonline.com/ArcGIS/rest/services/World_Imagery/MapServer/tile/{z}/{y}/{x}',
+      attribution: import.meta.env.VITE_MAPBOX_ACCESS_TOKEN
+        ? '&copy; <a href="https://www.mapbox.com/about/maps/">Mapbox</a> &copy; <a href="http://www.openstreetmap.org/copyright">OpenStreetMap</a>'
+        : 'Tiles &copy; Esri &mdash; Source: Esri, i-cubed, USDA, USGS, AEX, GeoEye, Getmapping, Aerogrid, IGN, IGP, UPR-EGP, and the GIS User Community',
+      maxZoom: 19,
     },
   },
 
@@ -54,56 +62,54 @@ export const APP_CONFIG = {
   riskColors: {
     LOW: {
       label: 'Low',
-      fillColor: '#10b981', // emerald-500
-      strokeColor: '#059669',
+      fillColor: '#3F7D58', // forest green
+      strokeColor: '#2D5E41',
       fillOpacity: 0.45,
       threshold: '0.00 – 0.25',
-      badgeBg: 'bg-emerald-500/20 text-emerald-400 border-emerald-500/30',
+      badgeBg: 'bg-forest/15 text-forest border-forest/30',
     },
     MODERATE: {
       label: 'Moderate',
-      fillColor: '#f59e0b', // amber-500
-      strokeColor: '#d97706',
+      fillColor: '#D99A2B', // warm amber
+      strokeColor: '#B07B1E',
       fillOpacity: 0.5,
       threshold: '0.25 – 0.50',
-      badgeBg: 'bg-amber-500/20 text-amber-400 border-amber-500/30',
+      badgeBg: 'bg-amber/15 text-amber border-amber/30',
     },
     HIGH: {
       label: 'High',
-      fillColor: '#f97316', // orange-500
-      strokeColor: '#ea580c',
+      fillColor: '#E06D2E', // orange
+      strokeColor: '#BD571F',
       fillOpacity: 0.6,
       threshold: '0.50 – 0.75',
-      badgeBg: 'bg-orange-500/20 text-orange-400 border-orange-500/30',
+      badgeBg: 'bg-orange-500/15 text-orange-400 border-orange-500/30',
     },
     EXTREME: {
       label: 'Extreme',
-      fillColor: '#ef4444', // red-500
-      strokeColor: '#dc2626',
+      fillColor: '#D84A3A', // strong red
+      strokeColor: '#B33729',
       fillOpacity: 0.7,
       threshold: '0.75 – 1.00',
-      badgeBg: 'bg-rose-500/20 text-rose-400 border-rose-500/30',
+      badgeBg: 'bg-danger/15 text-danger border-danger/30',
     },
   },
   // Operational Attention & Advisory Levels
   alertLevels: {
     INFO: {
       label: 'Operational Baseline',
-      icon: 'ℹ️',
-      badgeClass: 'bg-sky-500/20 text-sky-400 border-sky-500/30',
+      badgeClass: 'bg-ops-surface text-txt-secondary border-ops-border',
     },
     WARNING: {
       label: 'Elevated Activity',
-      icon: '⚠️',
-      badgeClass: 'bg-amber-500/20 text-amber-400 border-amber-500/30',
+      badgeClass: 'bg-amber/15 text-amber border-amber/40',
     },
     HIGH_ATTENTION: {
-      label: 'High Attention Required',
-      icon: '🚨',
-      badgeClass: 'bg-rose-500/20 text-rose-400 border-rose-500/30',
+      label: 'Critical Fire Danger',
+      badgeClass: 'bg-danger/15 text-danger border-danger/40',
     },
   },
 } as const;
 
 export type RiskLevelKey = keyof typeof APP_CONFIG.riskColors;
 export type AlertLevelKey = keyof typeof APP_CONFIG.alertLevels;
+

@@ -42,36 +42,35 @@ export const FireLayer: React.FC<FireLayerProps> = ({
       const marker = L.marker([lat, lon], { icon });
 
       const popupContent = `
-        <div class="p-1 space-y-1.5 font-sans text-xs">
-          <div class="flex items-center justify-between pb-1 border-b border-slate-700">
-            <span class="font-bold text-rose-400 flex items-center space-x-1">
-              <span>🔥</span>
-              <span>Thermal Hotspot</span>
+        <div class="p-1 space-y-1.5 font-mono text-xs">
+          <div class="flex items-center justify-between pb-1 border-b border-ops-border">
+            <span class="font-semibold text-danger uppercase text-[11px] tracking-wider">
+              Thermal Hotspot
             </span>
-            <span class="font-mono text-[10px] px-1.5 py-0.5 rounded bg-slate-800 text-slate-300">
+            <span class="font-mono text-[10px] px-1.5 py-0.5 rounded-xs bg-ops-surface text-txt-secondary border border-ops-border">
               ${props.satellite || 'MODIS/VIIRS'}
             </span>
           </div>
-          <div class="space-y-1 text-slate-300 font-mono text-[11px]">
+          <div class="space-y-1 text-txt-secondary text-[11px]">
             <div class="flex justify-between">
-              <span class="text-slate-400">Coordinates:</span>
-              <span>${lat.toFixed(4)}°N, ${lon.toFixed(4)}°E</span>
+              <span class="text-txt-muted">Coordinates:</span>
+              <span class="text-txt-primary">${lat.toFixed(4)}°N, ${lon.toFixed(4)}°E</span>
             </div>
             <div class="flex justify-between">
-              <span class="text-slate-400">Confidence:</span>
-              <span class="capitalize text-amber-400 font-semibold">${props.confidence || 'Nominal'}</span>
+              <span class="text-txt-muted">Confidence:</span>
+              <span class="capitalize text-amber font-semibold">${props.confidence || 'Nominal'}</span>
             </div>
             <div class="flex justify-between">
-              <span class="text-slate-400">Radiative Power:</span>
-              <span>${props.frp_mw !== null ? `${props.frp_mw.toFixed(1)} MW` : 'N/A'}</span>
+              <span class="text-txt-muted">Radiative Power:</span>
+              <span class="text-amber font-medium">${props.frp_mw !== null ? `${props.frp_mw.toFixed(1)} MW` : 'N/A'}</span>
             </div>
             <div class="flex justify-between">
-              <span class="text-slate-400">Brightness Temp:</span>
-              <span>${props.brightness_temperature_kelvin !== null ? `${props.brightness_temperature_kelvin.toFixed(1)} K` : 'N/A'}</span>
+              <span class="text-txt-muted">Brightness Temp:</span>
+              <span class="text-txt-primary">${props.brightness_temperature_kelvin !== null ? `${props.brightness_temperature_kelvin.toFixed(1)} K` : 'N/A'}</span>
             </div>
             <div class="flex justify-between">
-              <span class="text-slate-400">Detection Time:</span>
-              <span>${props.detection_time ? new Date(props.detection_time).toLocaleTimeString([], { hour: '2-digit', minute: '2-digit' }) : 'N/A'}</span>
+              <span class="text-txt-muted">Detection:</span>
+              <span class="text-txt-secondary">${props.detection_time ? new Date(props.detection_time).toLocaleTimeString([], { hour: '2-digit', minute: '2-digit' }) : 'N/A'} UTC</span>
             </div>
           </div>
         </div>

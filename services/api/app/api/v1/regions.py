@@ -3,6 +3,7 @@
 from typing import Optional
 from fastapi import APIRouter, Query, Path, Depends, status
 from ...schemas.region import RegionListResponse, RegionDetailResponse
+from ...schemas.geojson import GeoJSONFeature
 from ...services.region_service import RegionService
 from ...dependencies.services import get_region_service
 
@@ -37,3 +38,19 @@ async def get_region(
 ) -> RegionDetailResponse:
     """Retrieve detailed regional metadata and PostGIS GeoJSON boundary."""
     return service.get_region(region_id)
+
+
+@router.get(
+    "/{region_id}/boundary",
+    response_model=GeoJSONFeature,
+    status_code=status.HTTP_200_OK,
+    summary="Get Region Boundary Geometry as GeoJSON Feature"
+)
+async def get_region_boundary(
+    region_id: str = Path(..., description="Region UUID or unique code"),
+    service: RegionService = Depends(get_region_service),
+) -> GeoJSONFeature:
+    """Retrieve GeoJSON Feature containing the boundary geometry of the region."""
+    detail = service.get_region(region_id)
+    return detail.boundary
+

@@ -31,10 +31,10 @@ export const SimulationStatus: React.FC<SimulationStatusProps> = ({
 
   return (
     <div
-      className={`bg-slate-900/90 border border-slate-800 rounded-xl p-3.5 text-xs space-y-3 ${className}`}
+      className={`bg-ops-panel border border-ops-border rounded-xs p-3.5 text-xs space-y-3 ${className}`}
     >
-      <div className="flex items-center justify-between pb-2 border-b border-slate-800">
-        <span className="font-semibold text-slate-200">Execution Job Status</span>
+      <div className="flex items-center justify-between pb-2 border-b border-ops-border font-mono text-[11px] uppercase tracking-wider">
+        <span className="font-semibold text-txt-primary">Execution Status</span>
         <Badge variant={badgeVariant} size="sm">
           {status}
         </Badge>
@@ -43,7 +43,7 @@ export const SimulationStatus: React.FC<SimulationStatusProps> = ({
       {/* Progress Bar for Active Jobs */}
       {(status === 'RUNNING' || status === 'QUEUED') && (
         <div className="space-y-1.5">
-          <div className="flex justify-between text-[10px] text-slate-400 font-mono">
+          <div className="flex justify-between text-[10px] text-txt-muted font-mono uppercase">
             <span>Progress:</span>
             <span>
               {completedSteps !== undefined && totalSteps !== undefined
@@ -51,10 +51,10 @@ export const SimulationStatus: React.FC<SimulationStatusProps> = ({
                 : `${progressPct.toFixed(0)}%`}
             </span>
           </div>
-          <div className="w-full bg-slate-800 h-2 rounded-full overflow-hidden">
+          <div className="w-full bg-ops-bg h-1.5 rounded-xs overflow-hidden">
             <div
-              className={`h-full transition-all duration-500 rounded-full ${
-                status === 'RUNNING' ? 'bg-amber-500 animate-pulse' : 'bg-slate-600'
+              className={`h-full transition-all duration-500 rounded-xs ${
+                status === 'RUNNING' ? 'bg-forest' : 'bg-ops-surface'
               }`}
               style={{ width: `${Math.max(5, Math.min(100, progressPct))}%` }}
             />
@@ -63,48 +63,48 @@ export const SimulationStatus: React.FC<SimulationStatusProps> = ({
       )}
 
       {/* Identifiers & Timing */}
-      <div className="space-y-1 font-mono text-[11px] text-slate-400">
+      <div className="space-y-1 font-mono text-[11px] text-txt-muted">
         <div className="flex justify-between">
-          <span>Job ID:</span>
-          <span className="text-slate-200 truncate max-w-[140px]">
+          <span className="uppercase text-[10px]">Job ID:</span>
+          <span className="text-txt-primary truncate max-w-[140px]">
             {detail?.id || job?.simulation_id}
           </span>
         </div>
         <div className="flex justify-between">
-          <span>Horizon:</span>
-          <span className="text-slate-200">
-            {detail?.duration_hours || job?.duration_hours || 12}h Horizon
+          <span className="uppercase text-[10px]">Horizon:</span>
+          <span className="text-txt-primary">
+            {detail?.duration_hours || job?.duration_hours || 12}h
           </span>
         </div>
         {detail?.engine_version && (
           <div className="flex justify-between">
-            <span>Engine:</span>
-            <span className="text-slate-300">{detail.engine_version}</span>
+            <span className="uppercase text-[10px]">Engine:</span>
+            <span className="text-txt-secondary">{detail.engine_version}</span>
           </div>
         )}
       </div>
 
       {/* Completed Summary Metrics */}
       {status === 'COMPLETED' && detail?.metrics && (
-        <div className="p-2.5 rounded-lg bg-slate-950/70 border border-slate-800 space-y-1.5 font-mono text-[11px]">
-          <div className="text-[10px] font-bold text-amber-400 uppercase tracking-wider">
+        <div className="p-2.5 rounded-xs bg-ops-bg border border-ops-border space-y-1.5 font-mono text-[11px]">
+          <div className="text-[10px] font-semibold text-txt-primary uppercase tracking-wider">
             Run Telemetry
           </div>
           <div className="flex justify-between">
-            <span className="text-slate-400">Total Burned:</span>
-            <span className="text-rose-400 font-bold">
+            <span className="text-txt-muted">Total Burned:</span>
+            <span className="text-danger font-semibold">
               {detail.metrics.total_area_burned_ha.toFixed(1)} ha
             </span>
           </div>
           <div className="flex justify-between">
-            <span className="text-slate-400">Peak Velocity:</span>
-            <span className="text-amber-300 font-bold">
+            <span className="text-txt-muted">Peak Velocity:</span>
+            <span className="text-amber font-semibold">
               {detail.metrics.peak_spread_velocity_kmh.toFixed(2)} km/h
             </span>
           </div>
           <div className="flex justify-between">
-            <span className="text-slate-400">Spread Dir:</span>
-            <span className="text-slate-200">
+            <span className="text-txt-muted">Spread Dir:</span>
+            <span className="text-txt-primary">
               {detail.metrics.dominant_spread_direction_deg.toFixed(0)}°
             </span>
           </div>
@@ -113,10 +113,11 @@ export const SimulationStatus: React.FC<SimulationStatusProps> = ({
 
       {/* Error alert */}
       {detail?.error_message && (
-        <div className="text-rose-400 text-[10px] p-2 bg-rose-950/40 border border-rose-900 rounded">
+        <div className="text-danger text-[10px] p-2 bg-danger/10 border border-danger/40 rounded-xs font-mono">
           Error: {detail.error_message}
         </div>
       )}
     </div>
   );
 };
+

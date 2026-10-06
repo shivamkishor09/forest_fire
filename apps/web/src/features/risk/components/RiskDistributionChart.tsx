@@ -18,14 +18,14 @@ export const RiskDistributionChart: React.FC<RiskDistributionChartProps> = ({
   if (!summary) {
     return (
       <div
-        className={`p-3.5 bg-slate-900/95 border border-slate-700/80 rounded-xl shadow-xl backdrop-blur-md text-xs ${className}`}
+        className={`p-3 bg-ops-panel border border-ops-border rounded-[3px] text-xs ${className}`}
         role="region"
         aria-label="Risk Distribution Chart"
       >
-        <div className="flex items-center justify-between pb-2 border-b border-slate-800 mb-2.5">
-          <span className="font-semibold text-slate-200">Risk Distribution</span>
+        <div className="flex items-center justify-between pb-1.5 border-b border-ops-border mb-2 font-mono">
+          <span className="font-semibold text-txt-primary text-[10px] uppercase tracking-wider">Risk Distribution</span>
         </div>
-        <p className="text-slate-500 text-center py-4 text-[11px] italic">
+        <p className="text-txt-muted text-center py-2 text-xs font-mono">
           Awaiting risk prediction summary...
         </p>
       </div>
@@ -44,18 +44,18 @@ export const RiskDistributionChart: React.FC<RiskDistributionChartProps> = ({
 
   return (
     <div
-      className={`p-3.5 bg-slate-900/95 border border-slate-700/80 rounded-xl shadow-xl backdrop-blur-md text-xs ${className}`}
+      className={`p-3 bg-ops-panel/95 border border-ops-border rounded-[3px] shadow-lg text-xs ${className}`}
       role="region"
       aria-label="Risk Distribution Chart"
     >
-      <div className="flex items-center justify-between pb-2 border-b border-slate-800 mb-2.5">
-        <span className="font-semibold text-slate-200">500m Cell Breakdown</span>
-        <span className="text-[10px] font-mono text-slate-400">
-          {(summary.total_cells ?? 0).toLocaleString()} Cells
+      <div className="flex items-center justify-between pb-1.5 border-b border-ops-border mb-2 font-mono">
+        <span className="font-semibold text-txt-primary text-[10px] uppercase tracking-wider">500m Cell Breakdown</span>
+        <span className="text-[10px] text-txt-muted">
+          {(summary.total_cells ?? 0).toLocaleString()} CELLS
         </span>
       </div>
 
-      <div className="space-y-2">
+      <div className="space-y-1.5">
         {classes.map(({ key, count }) => {
           const config = APP_CONFIG.riskColors[key];
           const pct = totalCells > 0 ? (count / totalCells) * 100 : 0;
@@ -67,33 +67,32 @@ export const RiskDistributionChart: React.FC<RiskDistributionChartProps> = ({
               type="button"
               onClick={() => onSelectFilter(isFilterActive ? 'ALL' : key)}
               aria-label={`Filter map by ${config.label} risk tier`}
-              className={`w-full text-left p-1.5 rounded-lg border transition-all cursor-pointer ${
+              className={`w-full text-left p-1.5 rounded-[2px] border transition-colors cursor-pointer ${
                 isFilterActive
-                  ? 'bg-slate-800/90 border-amber-500 shadow-sm'
-                  : 'bg-slate-950/40 border-slate-800/80 hover:bg-slate-800/50'
+                  ? 'bg-ops-surface border-forest'
+                  : 'bg-ops-subtle border-ops-border hover:bg-ops-surface'
               }`}
-              title={`Click to filter map by ${config.label} risk`}
             >
               <div className="flex items-center justify-between text-[11px] mb-1">
                 <span className="flex items-center space-x-1.5 font-medium">
                   <span
-                    className="w-2.5 h-2.5 rounded-sm shrink-0 border border-black/30"
+                    className="w-2.5 h-2.5 rounded-[1px] shrink-0"
                     style={{ backgroundColor: config.fillColor }}
                   />
-                  <span className={isFilterActive ? 'text-amber-400 font-bold' : 'text-slate-300'}>
+                  <span className={isFilterActive ? 'text-txt-primary font-bold' : 'text-txt-secondary'}>
                     {config.label}
                   </span>
                 </span>
-                <span className="font-mono text-slate-300">
+                <span className="font-mono text-txt-primary">
                   {count.toLocaleString()}{' '}
-                  <span className="text-slate-500">({pct.toFixed(1)}%)</span>
+                  <span className="text-txt-muted">({pct.toFixed(1)}%)</span>
                 </span>
               </div>
 
-              {/* Horizontal Bar */}
-              <div className="w-full bg-slate-800 h-1.5 rounded-full overflow-hidden">
+              {/* Progress Bar */}
+              <div className="w-full bg-ops-bg h-1 rounded-[1px] overflow-hidden">
                 <div
-                  className="h-full rounded-full transition-all duration-500"
+                  className="h-full rounded-[1px] transition-all"
                   style={{
                     width: `${Math.max(1, pct)}%`,
                     backgroundColor: config.fillColor,
@@ -105,17 +104,18 @@ export const RiskDistributionChart: React.FC<RiskDistributionChartProps> = ({
         })}
       </div>
 
-      <div className="mt-2.5 pt-2 border-t border-slate-800/80 flex items-center justify-between text-[10px] text-slate-400 font-mono">
-        <span>Click bar to filter map</span>
+      <div className="mt-2 pt-1.5 border-t border-ops-border flex items-center justify-between text-[10px] text-txt-muted font-mono">
+        <span>Click tier to filter</span>
         {selectedFilter !== 'ALL' && (
           <button
             onClick={() => onSelectFilter('ALL')}
-            className="text-amber-400 hover:underline"
+            className="text-forest hover:underline font-semibold"
           >
-            Clear Filter (Show All)
+            Clear Filter
           </button>
         )}
       </div>
     </div>
   );
 };
+

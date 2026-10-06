@@ -1,4 +1,13 @@
 import React, { useState } from 'react';
+import {
+  GridIcon,
+  ShieldIcon,
+  FlameIcon,
+  ActivityIcon,
+  LayersIcon,
+  ChevronRightIcon,
+  ChevronLeftIcon,
+} from '../common/Icons';
 
 export type NavTab = 'overview' | 'risk' | 'active_fires' | 'simulation' | 'layers';
 
@@ -15,39 +24,73 @@ export const Navigation: React.FC<NavigationProps> = ({
 }) => {
   const [isCollapsed, setIsCollapsed] = useState(false);
 
-  const navItems: { id: NavTab; label: string; icon: string; badge?: string }[] = [
-    { id: 'overview', label: 'Overview', icon: '📊' },
-    { id: 'risk', label: '24h Fire Risk', icon: '🗺️', badge: '500m' },
-    { id: 'active_fires', label: 'Active Hotspots', icon: '🔥', badge: 'FIRMS' },
-    { id: 'simulation', label: '12h Simulation', icon: '⏳', badge: 'CA' },
-    { id: 'layers', label: 'Environmental Layers', icon: '🛰️' },
+  const navItems: {
+    id: NavTab;
+    label: string;
+    ariaLabel: string;
+    icon: React.ReactNode;
+  }[] = [
+    {
+      id: 'overview',
+      label: 'OVERVIEW',
+      ariaLabel: 'Overview',
+      icon: <GridIcon className="w-4 h-4" />,
+    },
+    {
+      id: 'risk',
+      label: '24H FIRE RISK',
+      ariaLabel: '24h Fire Risk',
+      icon: <ShieldIcon className="w-4 h-4" />,
+    },
+    {
+      id: 'active_fires',
+      label: 'ACTIVE HOTSPOTS',
+      ariaLabel: 'Active Hotspots',
+      icon: <FlameIcon className="w-4 h-4" />,
+    },
+    {
+      id: 'simulation',
+      label: 'SPREAD SIMULATION',
+      ariaLabel: '12h Simulation',
+      icon: <ActivityIcon className="w-4 h-4" />,
+    },
+    {
+      id: 'layers',
+      label: 'ENVIRONMENTAL DATA',
+      ariaLabel: 'Environmental Layers',
+      icon: <LayersIcon className="w-4 h-4" />,
+    },
   ];
 
   return (
     <aside
-      className={`bg-slate-900 border-r border-slate-800 flex flex-col shrink-0 select-none z-20 transition-all duration-200 ${
-        isCollapsed ? 'w-16' : 'w-60'
+      className={`bg-ops-subtle border-r border-ops-border flex flex-col shrink-0 select-none z-20 transition-all duration-150 ${
+        isCollapsed ? 'w-14' : 'w-56'
       } ${className}`}
     >
-      {/* Navigation Header / Toggle */}
-      <div className="p-3 border-b border-slate-800/80 flex items-center justify-between">
+      {/* Collapse / Expand Control Header */}
+      <div className="h-9 px-3 border-b border-ops-border flex items-center justify-between">
         {!isCollapsed && (
-          <span className="text-[11px] uppercase font-semibold tracking-wider text-slate-400">
-            GIS Modules
+          <span className="text-[10px] font-mono font-semibold uppercase tracking-wider text-txt-muted">
+            OPERATIONAL MODULES
           </span>
         )}
         <button
           onClick={() => setIsCollapsed(!isCollapsed)}
-          className="text-slate-400 hover:text-slate-200 p-1.5 rounded-lg hover:bg-slate-800 transition-colors ml-auto text-xs"
-          title={isCollapsed ? 'Expand Navigation' : 'Collapse Navigation to Maximize Map'}
+          className="text-txt-muted hover:text-txt-primary p-1 rounded-[2px] hover:bg-ops-surface transition-colors ml-auto text-xs flex items-center justify-center w-5 h-5"
+          title={isCollapsed ? 'Expand Navigation' : 'Collapse Navigation'}
           aria-label={isCollapsed ? 'Expand Navigation' : 'Collapse Navigation'}
         >
-          {isCollapsed ? '▶' : '◀'}
+          {isCollapsed ? (
+            <ChevronRightIcon className="w-3.5 h-3.5" />
+          ) : (
+            <ChevronLeftIcon className="w-3.5 h-3.5" />
+          )}
         </button>
       </div>
 
-      {/* Navigation Buttons */}
-      <nav className="flex-1 p-2 space-y-1">
+      {/* Navigation Module Links */}
+      <nav className="flex-1 py-2 space-y-0.5">
         {navItems.map((item) => {
           const isActive = currentTab === item.id;
           return (
@@ -55,49 +98,48 @@ export const Navigation: React.FC<NavigationProps> = ({
               key={item.id}
               onClick={() => onSelectTab(item.id)}
               className={`w-full flex items-center ${
-                isCollapsed ? 'justify-center px-2 py-3' : 'justify-between px-3 py-2.5'
-              } rounded-xl text-xs font-medium transition-all ${
+                isCollapsed ? 'justify-center py-2.5 px-0' : 'justify-start px-3 py-2'
+              } text-[12px] font-medium tracking-wide transition-colors relative ${
                 isActive
-                  ? 'bg-amber-600/20 text-amber-400 border border-amber-500/30 shadow-sm'
-                  : 'text-slate-400 hover:text-slate-200 hover:bg-slate-800/60'
+                  ? 'bg-ops-surface text-txt-primary font-semibold border-l-2 border-forest'
+                  : 'text-txt-secondary hover:text-txt-primary hover:bg-ops-panel border-l-2 border-transparent'
               }`}
               title={item.label}
+              aria-label={item.ariaLabel}
             >
-              <div className="flex items-center space-x-3">
-                <span className="text-base">{item.icon}</span>
+              <div className="flex items-center space-x-2.5">
+                <span className={isActive ? 'text-forest' : 'text-txt-muted'}>
+                  {item.icon}
+                </span>
                 {!isCollapsed && <span>{item.label}</span>}
               </div>
-              {!isCollapsed && item.badge && (
-                <span className="text-[9px] uppercase font-mono px-1.5 py-0.5 rounded bg-slate-800 text-slate-400 border border-slate-700">
-                  {item.badge}
-                </span>
-              )}
             </button>
           );
         })}
       </nav>
 
-      {/* Operational Metadata Footer */}
+      {/* Operational Reference Footer */}
       {!isCollapsed ? (
-        <div className="p-3.5 border-t border-slate-800/80 bg-slate-950/40 text-[11px] text-slate-400 space-y-1">
+        <div className="p-3 border-t border-ops-border bg-ops-bg text-[10px] font-mono text-txt-muted space-y-1">
           <div className="flex justify-between">
-            <span>Spatial Grid:</span>
-            <span className="font-mono text-slate-200">500m × 500m</span>
+            <span>GRID:</span>
+            <span className="text-txt-secondary">500m × 500m</span>
           </div>
           <div className="flex justify-between">
-            <span>Projection:</span>
-            <span className="font-mono text-slate-200">EPSG:4326</span>
+            <span>PROJECTION:</span>
+            <span className="text-txt-secondary">EPSG:4326</span>
           </div>
           <div className="flex justify-between">
-            <span>Operational Mode:</span>
-            <span className="font-mono text-emerald-400 font-semibold">Live GIS</span>
+            <span>STATUS:</span>
+            <span className="text-forest font-semibold">ONLINE</span>
           </div>
         </div>
       ) : (
-        <div className="p-2 border-t border-slate-800/80 text-center text-[10px] font-mono text-slate-500">
+        <div className="p-2 border-t border-ops-border text-center text-[9px] font-mono text-txt-muted">
           500m
         </div>
       )}
     </aside>
   );
 };
+

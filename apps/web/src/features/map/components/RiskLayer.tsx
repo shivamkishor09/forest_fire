@@ -71,10 +71,10 @@ export const RiskLayer: React.FC<RiskLayerProps> = ({
         });
 
         layer.bindTooltip(
-          `<div class="font-sans text-xs">
-            <span class="font-bold uppercase tracking-wider">${props.risk_class} Risk</span><br/>
-            Probability: ${(props.risk_probability * 100).toFixed(1)}%<br/>
-            <span class="text-slate-400 font-mono text-[10px]">Cell: ${props.cell_id}</span>
+          `<div class="font-mono text-xs leading-tight">
+            <span class="font-bold uppercase tracking-wider text-txt-primary">${props.risk_class} RISK</span><br/>
+            <span class="text-txt-secondary">Susceptibility: ${(props.risk_probability * 100).toFixed(1)}%</span><br/>
+            <span class="text-txt-muted text-[10px]">Partition: ${props.cell_id}</span>
           </div>`,
           { sticky: true, className: 'leaflet-dark-tooltip' }
         );

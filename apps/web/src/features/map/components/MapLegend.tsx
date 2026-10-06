@@ -1,6 +1,7 @@
 import React, { useState } from 'react';
 import { useMapContext } from '../hooks/useMapContext';
 import { APP_CONFIG } from '../../../app/config';
+import { ChevronDownIcon, ChevronUpIcon } from '../../../components/common/Icons';
 
 export interface MapLegendProps {
   className?: string;
@@ -10,7 +11,6 @@ export const MapLegend: React.FC<MapLegendProps> = ({ className = '' }) => {
   const { activeLayers } = useMapContext();
   const [isCollapsed, setIsCollapsed] = useState(false);
 
-  // Check if at least one layer with a legend is active
   const hasActiveLegends =
     activeLayers.riskChoropleth ||
     activeLayers.activeFires ||
@@ -20,86 +20,95 @@ export const MapLegend: React.FC<MapLegendProps> = ({ className = '' }) => {
 
   return (
     <div
-      className={`z-[400] bg-slate-900/95 border border-slate-700/80 rounded-xl shadow-2xl backdrop-blur-md overflow-hidden transition-all text-xs select-none ${
-        isCollapsed ? 'w-auto' : 'w-60'
+      className={`z-[400] bg-ops-panel/95 border border-ops-border rounded-[3px] shadow-lg overflow-hidden transition-all text-xs select-none ${
+        isCollapsed ? 'w-auto' : 'w-56'
       } ${className}`}
     >
       <div
-        className="px-3 py-2 bg-slate-950/60 border-b border-slate-800 flex items-center justify-between cursor-pointer"
+        className="px-2.5 py-1.5 bg-ops-subtle border-b border-ops-border flex items-center justify-between cursor-pointer"
         onClick={() => setIsCollapsed(!isCollapsed)}
       >
-        <div className="flex items-center space-x-1.5 font-semibold text-slate-200">
-          <span>🗺️</span>
-          <span>Map Legend</span>
-        </div>
-        <span className="text-[10px] text-slate-400">{isCollapsed ? '▲' : '▼'}</span>
+        <span className="font-mono text-[11px] font-semibold uppercase tracking-wider text-txt-primary">
+          MAP LEGEND
+        </span>
+        {isCollapsed ? (
+          <ChevronUpIcon className="w-3.5 h-3.5 text-txt-muted" />
+        ) : (
+          <ChevronDownIcon className="w-3.5 h-3.5 text-txt-muted" />
+        )}
       </div>
 
       {!isCollapsed && (
-        <div className="p-3 space-y-3 max-h-72 overflow-y-auto">
-          {/* Risk Legend */}
+        <div className="p-2.5 space-y-3 font-mono text-[10px]">
+          {/* 24h Fire Risk */}
           {activeLayers.riskChoropleth && (
             <div>
-              <div className="font-semibold text-slate-300 text-[11px] mb-1.5 flex items-center justify-between">
-                <span>24h Risk Susceptibility</span>
-                <span className="text-[9px] font-mono text-slate-500">500m Grid</span>
+              <div className="font-semibold text-txt-primary text-[10px] tracking-wider mb-1.5 flex items-center justify-between">
+                <span>24H FIRE RISK</span>
+                <span className="text-txt-muted">500m</span>
               </div>
-              <div className="space-y-1 font-mono text-[10px]">
+              <div className="space-y-1">
                 {Object.entries(APP_CONFIG.riskColors).map(([key, config]) => (
                   <div key={key} className="flex items-center justify-between">
                     <span className="flex items-center space-x-2">
                       <span
-                        className="w-2.5 h-2.5 rounded-sm shrink-0 border border-black/30"
+                        className="w-2.5 h-2.5 rounded-[1px] shrink-0"
                         style={{ backgroundColor: config.fillColor }}
                       />
-                      <span className="text-slate-300 capitalize">{config.label}</span>
+                      <span className="text-txt-secondary uppercase">{config.label}</span>
                     </span>
-                    <span className="text-slate-500">{config.threshold}</span>
+                    <span className="text-txt-muted">{config.threshold}</span>
                   </div>
                 ))}
               </div>
             </div>
           )}
 
-          {/* Active Fires Legend */}
+          {/* Active Hotspots */}
           {activeLayers.activeFires && (
-            <div className="pt-2 border-t border-slate-800">
-              <div className="font-semibold text-slate-300 text-[11px] mb-1.5 flex items-center justify-between">
-                <span>Thermal Hotspots</span>
-                <span className="text-[9px] font-mono text-slate-500">FIRMS</span>
+            <div className="pt-2 border-t border-ops-border">
+              <div className="font-semibold text-txt-primary text-[10px] tracking-wider mb-1.5 flex items-center justify-between">
+                <span>THERMAL HOTSPOTS</span>
+                <span className="text-txt-muted">FIRMS</span>
               </div>
-              <div className="space-y-1 text-[10px]">
-                <div className="flex items-center space-x-2">
-                  <span className="w-2.5 h-2.5 rounded-full bg-rose-500 border border-white shrink-0" />
-                  <span className="text-slate-300">High Confidence (&gt;50 MW FRP)</span>
+              <div className="space-y-1">
+                <div className="flex items-center justify-between">
+                  <span className="flex items-center space-x-2">
+                    <span className="w-2.5 h-2.5 rounded-full bg-danger shrink-0 border border-txt-primary/40" />
+                    <span className="text-txt-secondary">High Confidence</span>
+                  </span>
+                  <span className="text-txt-muted">&gt;50 MW</span>
                 </div>
-                <div className="flex items-center space-x-2">
-                  <span className="w-2.5 h-2.5 rounded-full bg-orange-500 border border-white shrink-0" />
-                  <span className="text-slate-300">Nominal Confidence Hotspot</span>
+                <div className="flex items-center justify-between">
+                  <span className="flex items-center space-x-2">
+                    <span className="w-2.5 h-2.5 rounded-full bg-amber shrink-0 border border-txt-primary/40" />
+                    <span className="text-txt-secondary">Nominal</span>
+                  </span>
+                  <span className="text-txt-muted">&lt;50 MW</span>
                 </div>
               </div>
             </div>
           )}
 
-          {/* Simulation Legend */}
+          {/* 12h Spread Simulation */}
           {activeLayers.simulationPerimeter && (
-            <div className="pt-2 border-t border-slate-800">
-              <div className="font-semibold text-slate-300 text-[11px] mb-1.5 flex items-center justify-between">
-                <span>12h Spread Simulation</span>
-                <span className="text-[9px] font-mono text-slate-500">CA Engine</span>
+            <div className="pt-2 border-t border-ops-border">
+              <div className="font-semibold text-txt-primary text-[10px] tracking-wider mb-1.5 flex items-center justify-between">
+                <span>SPREAD SIMULATION</span>
+                <span className="text-txt-muted">12H CA</span>
               </div>
-              <div className="space-y-1 text-[10px]">
+              <div className="space-y-1">
                 <div className="flex items-center space-x-2">
-                  <span className="text-xs">🎯</span>
-                  <span className="text-slate-300">Ignition Origin Point</span>
+                  <span className="w-2.5 h-2.5 rounded-full bg-danger border border-txt-primary shrink-0" />
+                  <span className="text-txt-secondary">Ignition Origin</span>
                 </div>
                 <div className="flex items-center space-x-2">
-                  <span className="w-3 h-1.5 bg-rose-500/70 border border-rose-400 shrink-0" />
-                  <span className="text-slate-300">Active Fire Front</span>
+                  <span className="w-3 h-1.5 bg-danger/80 border border-danger shrink-0" />
+                  <span className="text-txt-secondary">Active Perimeter Front</span>
                 </div>
                 <div className="flex items-center space-x-2">
-                  <span className="w-3 h-1.5 bg-orange-500/30 border border-orange-400 border-dashed shrink-0" />
-                  <span className="text-slate-300">Cumulative Burn Scar</span>
+                  <span className="w-3 h-1.5 bg-amber/40 border border-amber border-dashed shrink-0" />
+                  <span className="text-txt-secondary">Cumulative Burn Area</span>
                 </div>
               </div>
             </div>
@@ -109,3 +118,4 @@ export const MapLegend: React.FC<MapLegendProps> = ({ className = '' }) => {
     </div>
   );
 };
+

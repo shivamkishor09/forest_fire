@@ -15,18 +15,18 @@ export const SystemStatusBanner: React.FC<SystemStatusBannerProps> = ({
 }) => {
   return (
     <div
-      className={`p-3 bg-slate-900/80 border border-slate-800 rounded-xl flex items-center justify-between text-xs text-slate-300 ${className}`}
+      className={`px-3.5 py-2 bg-ops-panel border border-ops-border rounded-xs flex items-center justify-between text-xs text-txt-secondary ${className}`}
     >
-      <div className="flex items-center space-x-3">
+      <div className="flex items-center space-x-2.5">
         <span
-          className={`w-2.5 h-2.5 rounded-full ${
-            online ? 'bg-emerald-400 animate-pulse' : 'bg-rose-500'
+          className={`w-2 h-2 rounded-full ${
+            online ? 'bg-forest' : 'bg-danger'
           }`}
         />
-        <div className="flex items-center space-x-2">
-          <span className="font-semibold text-slate-200">System Pipeline Status:</span>
-          <span className="font-mono text-slate-400">
-            {online ? `FastAPI v${health?.version || '0.1.0'}` : 'Offline Fallback Active'}
+        <div className="flex items-center space-x-2 font-mono text-[11px]">
+          <span className="font-semibold text-txt-primary uppercase tracking-wider">System Pipeline:</span>
+          <span className="text-txt-secondary">
+            {online ? `FastAPI v${health?.version || '0.1.0'}` : 'Offline Fallback'}
           </span>
         </div>
       </div>

@@ -29,19 +29,19 @@ export const RegionLayer: React.FC<RegionLayerProps> = ({
 
     const geoJsonLayer = L.geoJSON(boundaryFeature as unknown as GeoJSON.GeoJsonObject, {
       style: {
-        color: '#38bdf8', // sky-400
-        weight: 2,
+        color: '#3F7D58', // forest green operational boundary
+        weight: 1.5,
         dashArray: '4, 4',
-        fillColor: '#38bdf8',
-        fillOpacity: 0.05,
+        fillColor: '#3F7D58',
+        fillOpacity: 0.04,
       },
       onEachFeature: (_, layer) => {
         const props = boundaryFeature.properties;
         if (props) {
           layer.bindTooltip(
-            `<div class="font-sans text-xs">
-              <strong>${props.name}</strong><br/>
-              <span class="text-slate-400 font-mono">${props.code} — ${props.state}</span>
+            `<div class="font-mono text-xs leading-tight">
+              <span class="font-semibold text-txt-primary uppercase tracking-wider">${props.name || 'Region'}</span><br/>
+              <span class="text-txt-muted text-[10px]">${props.code || ''}${props.state ? ` — ${props.state}` : ''}</span>
             </div>`,
             { sticky: true, className: 'leaflet-dark-tooltip' }
           );

@@ -9,6 +9,7 @@ import { RegionSummary } from '../types/domain';
 import { GeoJSONFeature, PolygonGeometry, MultiPolygonGeometry } from '../types/geo';
 import { LoadingSpinner } from '../components/feedback/LoadingSpinner';
 import { ErrorAlert } from '../components/feedback/ErrorAlert';
+import { LayersIcon } from '../components/common/Icons';
 
 export interface LayersPageProps {
   selectedRegion: RegionSummary | null;
@@ -30,18 +31,20 @@ export const LayersPage: React.FC<LayersPageProps> = ({
   } = useLayers();
 
   return (
-    <div className="flex-1 flex flex-col h-full overflow-hidden relative">
-      {/* Top Header */}
-      <div className="h-12 bg-slate-900 border-b border-slate-800 px-5 flex items-center justify-between shrink-0 text-xs z-10">
+    <div className="flex-1 flex flex-col h-full overflow-hidden relative bg-ops-bg">
+      {/* Top Ribbon */}
+      <div className="h-9 bg-ops-panel border-b border-ops-border px-4 flex items-center justify-between shrink-0 text-xs z-10">
         <div className="flex items-center space-x-3">
-          <span className="font-semibold text-slate-300">Environmental & Terrain Catalog:</span>
-          <span className="text-slate-400 font-mono text-[11px]">
-            ISRO Bhuvan / CartoDEM / IMD ERA5 / FIRMS
+          <span className="font-semibold text-txt-primary uppercase font-mono text-[11px] tracking-wider">
+            Layer Catalog:
+          </span>
+          <span className="text-txt-muted font-mono text-[11px]">
+            ISRO Bhuvan · CartoDEM · IMD ERA5 · NASA FIRMS
           </span>
         </div>
 
-        <div className="text-slate-400 font-mono text-[11px]">
-          Sector: {selectedRegion?.name || 'Western Himalaya'} | 500m Normalized Rasters
+        <div className="text-txt-secondary font-mono text-[11px] hidden md:block">
+          Sector: {selectedRegion?.name || 'Garhwal Division'} | 500m Native Rasters
         </div>
       </div>
 
@@ -49,7 +52,7 @@ export const LayersPage: React.FC<LayersPageProps> = ({
       <div className="flex-1 flex overflow-hidden relative">
         <div className="flex-1 relative overflow-hidden">
           {isLoading && (
-            <div className="absolute inset-0 z-30 bg-slate-950/70 backdrop-blur-sm flex items-center justify-center">
+            <div className="absolute inset-0 z-30 bg-ops-bg/75 flex items-center justify-center">
               <LoadingSpinner label="Loading GIS layers metadata..." />
             </div>
           )}
@@ -75,27 +78,27 @@ export const LayersPage: React.FC<LayersPageProps> = ({
 
             {/* Selected Layer Properties Card */}
             {selectedLayer && (
-              <div className="absolute top-4 left-4 z-[400] bg-slate-900/95 border border-slate-700/80 rounded-xl p-4 shadow-xl backdrop-blur-md text-xs w-72 pointer-events-auto space-y-2.5">
-                <div className="font-semibold text-slate-100 flex items-center space-x-2">
-                  <span>📑</span>
+              <div className="absolute top-4 left-4 z-[400] bg-ops-panel border border-ops-border rounded-xs p-3.5 shadow-2xl text-xs w-72 pointer-events-auto space-y-2">
+                <div className="font-semibold text-txt-primary flex items-center space-x-2 font-mono text-[11px] uppercase tracking-wider pb-1.5 border-b border-ops-border">
+                  <LayersIcon className="w-3.5 h-3.5 text-amber" />
                   <span>{selectedLayer.name}</span>
                 </div>
-                <p className="text-[11px] text-slate-300 leading-relaxed">
+                <p className="text-[11px] text-txt-secondary leading-relaxed">
                   {selectedLayer.description}
                 </p>
-                <div className="space-y-1 font-mono text-[10px] text-slate-400 pt-2 border-t border-slate-800">
+                <div className="space-y-1 font-mono text-[10px] text-txt-muted pt-2 border-t border-ops-border">
                   <div className="flex justify-between">
-                    <span>Source:</span>
-                    <span className="text-slate-200">{selectedLayer.source}</span>
+                    <span className="uppercase">Source:</span>
+                    <span className="text-txt-primary">{selectedLayer.source}</span>
                   </div>
                   <div className="flex justify-between">
-                    <span>Resolution:</span>
-                    <span className="text-slate-200">{selectedLayer.resolution || '500m'}</span>
+                    <span className="uppercase">Resolution:</span>
+                    <span className="text-txt-primary">{selectedLayer.resolution || '500m'}</span>
                   </div>
                   <div className="flex justify-between">
-                    <span>Status:</span>
-                    <span className={selectedLayer.is_available ? 'text-emerald-400 font-semibold' : 'text-amber-400'}>
-                      {selectedLayer.is_available ? 'Operational Layer' : 'Upcoming Ingestion Pipeline'}
+                    <span className="uppercase">Status:</span>
+                    <span className={selectedLayer.is_available ? 'text-forest font-semibold' : 'text-txt-muted'}>
+                      {selectedLayer.is_available ? 'ONLINE' : 'STANDBY'}
                     </span>
                   </div>
                 </div>
@@ -105,12 +108,12 @@ export const LayersPage: React.FC<LayersPageProps> = ({
         </div>
 
         {/* Right Catalogue Sidebar */}
-        <div className="w-80 bg-slate-900 border-l border-slate-800 p-3.5 flex flex-col shrink-0 z-10 overflow-hidden">
-          <div className="pb-3 border-b border-slate-800 mb-3 flex items-center justify-between">
-            <span className="font-semibold text-xs text-slate-200 uppercase tracking-wider">
-              Available Layers
+        <div className="w-80 bg-ops-panel border-l border-ops-border p-3.5 flex flex-col shrink-0 z-10 overflow-hidden">
+          <div className="pb-2.5 border-b border-ops-border mb-3 flex items-center justify-between font-mono">
+            <span className="font-semibold text-xs text-txt-primary uppercase tracking-wider">
+              Datasets & Layers
             </span>
-            <span className="text-[10px] font-mono text-slate-400">{layers.length} Datasets</span>
+            <span className="text-[10px] text-txt-muted">{layers.length} Total</span>
           </div>
 
           <div className="flex-1 overflow-y-auto">
@@ -126,3 +129,4 @@ export const LayersPage: React.FC<LayersPageProps> = ({
     </div>
   );
 };
+

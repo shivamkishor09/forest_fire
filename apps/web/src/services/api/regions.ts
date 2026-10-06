@@ -27,7 +27,12 @@ export async function fetchRegionById(regionId: string): Promise<RegionDetail> {
 export async function fetchRegionBoundary(
   regionId: string
 ): Promise<GeoJSONFeature<PolygonGeometry | MultiPolygonGeometry, RegionSummary>> {
-  return httpClient.get<GeoJSONFeature<PolygonGeometry | MultiPolygonGeometry, RegionSummary>>(
-    `/regions/${encodeURIComponent(regionId)}/boundary`
-  );
+  try {
+    return await httpClient.get<GeoJSONFeature<PolygonGeometry | MultiPolygonGeometry, RegionSummary>>(
+      `/regions/${encodeURIComponent(regionId)}/boundary`
+    );
+  } catch {
+    const detail = await fetchRegionById(regionId);
+    return detail.boundary as unknown as GeoJSONFeature<PolygonGeometry | MultiPolygonGeometry, RegionSummary>;
+  }
 }

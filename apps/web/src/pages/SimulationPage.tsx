@@ -15,6 +15,7 @@ import { GeoJSONFeature, PolygonGeometry, MultiPolygonGeometry } from '../types/
 import { ErrorAlert } from '../components/feedback/ErrorAlert';
 import { isPointInGeometry, getBoundsFromGeoJSON } from '../features/map/utils/geoUtils';
 import { useMapContext } from '../features/map/hooks/useMapContext';
+import { TargetIcon, MapIcon, SlidersIcon, BarChartIcon } from '../components/common/Icons';
 
 export interface SimulationPageProps {
   selectedRegion: RegionSummary | null;
@@ -44,25 +45,25 @@ const SimulationFocusControls: React.FC<{
   };
 
   return (
-    <div className="bg-slate-900/95 border border-slate-700/80 rounded-xl shadow-xl backdrop-blur-md p-1 flex flex-col space-y-1">
+    <div className="bg-ops-panel border border-ops-border rounded-xs shadow-md p-1 flex flex-col space-y-1">
       {ignitionPoint && (
         <button
           onClick={handleFocusIgnition}
-          className="w-7 h-7 rounded-lg flex items-center justify-center text-[12px] text-slate-300 hover:text-amber-400 hover:bg-slate-800 transition-colors"
+          className="w-7 h-7 rounded-xs flex items-center justify-center text-txt-secondary hover:text-amber hover:bg-ops-surface transition-colors"
           title="Center on Ignition Point"
           aria-label="Center on Ignition Point"
         >
-          📍
+          <TargetIcon className="w-4 h-4" />
         </button>
       )}
       {boundary && (
         <button
           onClick={handleFocusBoundary}
-          className="w-7 h-7 rounded-lg flex items-center justify-center text-[12px] text-slate-300 hover:text-sky-400 hover:bg-slate-800 transition-colors"
+          className="w-7 h-7 rounded-xs flex items-center justify-center text-txt-secondary hover:text-amber hover:bg-ops-surface transition-colors"
           title="Fit Region Boundary"
           aria-label="Fit Region Boundary"
         >
-          🗺️
+          <MapIcon className="w-4 h-4" />
         </button>
       )}
     </div>
@@ -136,7 +137,7 @@ export const SimulationPage: React.FC<SimulationPageProps> = ({
     // Validate if the clicked point is within the selected region boundary
     if (boundary?.geometry && !isPointInGeometry({ latitude: lat, longitude: lng }, boundary.geometry)) {
       setBoundaryWarning(
-        `Clicked coordinate (${lat.toFixed(4)}°N, ${lng.toFixed(4)}°E) is outside the boundary of region '${selectedRegion?.name || 'Selected Region'}'. Please choose a location inside the highlighted area.`
+        `Coordinate (${lat.toFixed(4)}°N, ${lng.toFixed(4)}°E) is outside region boundary '${selectedRegion?.name || 'Selected Region'}'.`
       );
       return;
     }
@@ -146,19 +147,19 @@ export const SimulationPage: React.FC<SimulationPageProps> = ({
   };
 
   return (
-    <div className="flex-1 flex flex-col h-full overflow-hidden relative">
+    <div className="flex-1 flex flex-col h-full overflow-hidden relative bg-ops-bg">
       {/* Simulation Ribbon */}
-      <div className="h-12 bg-slate-900 border-b border-slate-800 px-5 flex items-center justify-between shrink-0 text-xs z-10 font-mono">
+      <div className="h-9 bg-ops-panel border-b border-ops-border px-4 flex items-center justify-between shrink-0 text-xs z-10 font-mono">
         <div className="flex items-center space-x-3">
-          <span className="text-slate-400">Simulation Engine:</span>
-          <span className="text-amber-400 font-semibold">12-Hour Cellular Automata</span>
-          <span className="px-2 py-0.5 rounded bg-slate-800 text-slate-300 border border-slate-700 text-[10px]">
-            {activeJob ? activeJob.status : 'Ready for Dispatch'}
+          <span className="text-txt-muted uppercase tracking-wider text-[11px] font-semibold">Simulation Engine:</span>
+          <span className="text-txt-primary font-semibold text-[11px]">Cellular Automata (12h Spread)</span>
+          <span className="px-2 py-0.5 rounded-xs bg-ops-surface text-txt-primary border border-ops-border text-[10px] font-bold">
+            {activeJob ? activeJob.status : 'READY'}
           </span>
         </div>
 
-        <div className="text-slate-400 text-[11px] hidden md:block">
-          Click map to establish ignition coordinates.
+        <div className="text-txt-muted text-[11px] hidden md:block">
+          Click map or input coordinates to place ignition origin.
         </div>
       </div>
 
@@ -170,13 +171,13 @@ export const SimulationPage: React.FC<SimulationPageProps> = ({
             <div className="absolute top-4 left-1/2 -translate-x-1/2 z-30 w-full max-w-md px-4 space-y-2">
               {error && (
                 <ErrorAlert
-                  title="Simulation Dispatch Warning"
+                  title="Simulation Warning"
                   message={error}
                 />
               )}
               {boundaryWarning && (
                 <ErrorAlert
-                  title="Ignition Boundary Warning"
+                  title="Boundary Warning"
                   message={boundaryWarning}
                 />
               )}
@@ -199,7 +200,7 @@ export const SimulationPage: React.FC<SimulationPageProps> = ({
             </div>
 
             {/* Floating 12-Hour Timeline Slider at bottom */}
-            <div className="absolute bottom-6 left-1/2 -translate-x-1/2 z-[400] w-full max-w-2xl px-4 pointer-events-auto">
+            <div className="absolute bottom-5 left-1/2 -translate-x-1/2 z-[400] w-full max-w-2xl px-4 pointer-events-auto">
               <Timeline
                 stepsData={stepsData}
                 currentStepIndex={currentStepIndex}
@@ -215,28 +216,30 @@ export const SimulationPage: React.FC<SimulationPageProps> = ({
         </div>
 
         {/* Right Simulation Parameters & Analytics Sidebar */}
-        <div className="w-80 bg-slate-900 border-l border-slate-800 p-4 flex flex-col space-y-4 shrink-0 z-10 overflow-y-auto">
+        <div className="w-80 bg-ops-panel border-l border-ops-border p-3.5 flex flex-col space-y-3.5 shrink-0 z-10 overflow-y-auto">
           {/* Navigation tab between Parameters and Spread Metrics */}
-          <div className="flex bg-slate-950/80 border border-slate-800 rounded-lg p-0.5 text-[11px] shrink-0">
+          <div className="flex bg-ops-bg border border-ops-border rounded-xs p-0.5 text-[11px] shrink-0 font-mono">
             <button
               onClick={() => setSidebarTab('params')}
-              className={`flex-1 py-1 rounded text-center font-medium transition-colors ${
+              className={`flex-1 py-1.5 px-2 rounded-xs flex items-center justify-center space-x-1.5 font-medium transition-colors ${
                 sidebarTab === 'params'
-                  ? 'bg-amber-600 text-white font-bold'
-                  : 'text-slate-400 hover:text-slate-200'
+                  ? 'bg-forest text-txt-primary font-semibold'
+                  : 'text-txt-secondary hover:text-txt-primary'
               }`}
             >
-              ⚙️ Parameters
+              <SlidersIcon className="w-3.5 h-3.5" />
+              <span>PARAMETERS</span>
             </button>
             <button
               onClick={() => setSidebarTab('metrics')}
-              className={`flex-1 py-1 rounded text-center font-medium transition-colors ${
+              className={`flex-1 py-1.5 px-2 rounded-xs flex items-center justify-center space-x-1.5 font-medium transition-colors ${
                 sidebarTab === 'metrics'
-                  ? 'bg-amber-600 text-white font-bold'
-                  : 'text-slate-400 hover:text-slate-200'
+                  ? 'bg-forest text-txt-primary font-semibold'
+                  : 'text-txt-secondary hover:text-txt-primary'
               }`}
             >
-              📈 Spread Analytics
+              <BarChartIcon className="w-3.5 h-3.5" />
+              <span>SPREAD METRICS</span>
             </button>
           </div>
 

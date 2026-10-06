@@ -19,24 +19,24 @@ export const Card: React.FC<CardProps> = ({
 }) => {
   return (
     <div
-      className={`bg-slate-900/90 border border-slate-800 rounded-xl shadow-lg backdrop-blur-sm overflow-hidden flex flex-col ${className}`}
+      className={`bg-ops-panel border border-ops-border rounded-xs shadow-md overflow-hidden flex flex-col ${className}`}
     >
       {(title || action) && (
-        <div className="px-4 py-3 border-b border-slate-800/80 flex items-center justify-between shrink-0">
+        <div className="px-3.5 py-2.5 border-b border-ops-border bg-ops-subtle flex items-center justify-between shrink-0">
           <div>
             {typeof title === 'string' ? (
-              <h3 className="text-xs font-semibold text-slate-200 uppercase tracking-wider">
+              <h3 className="text-xs font-semibold text-txt-primary uppercase tracking-wider">
                 {title}
               </h3>
             ) : (
               title
             )}
-            {subtitle && <p className="text-[11px] text-slate-400 mt-0.5">{subtitle}</p>}
+            {subtitle && <p className="text-[11px] text-txt-secondary mt-0.5">{subtitle}</p>}
           </div>
           {action && <div className="flex items-center space-x-2">{action}</div>}
         </div>
       )}
-      <div className={`p-4 flex-1 ${bodyClassName}`}>{children}</div>
+      <div className={`p-3.5 flex-1 ${bodyClassName}`}>{children}</div>
     </div>
   );
 };

@@ -23,13 +23,13 @@ export const Select: React.FC<SelectProps> = ({
   return (
     <div className="flex flex-col space-y-1">
       {label && (
-        <label htmlFor={selectId} className="text-xs font-medium text-slate-300">
+        <label htmlFor={selectId} className="text-xs font-medium text-txt-secondary">
           {label}
         </label>
       )}
       <select
         id={selectId}
-        className={`bg-slate-800 border border-slate-700 rounded-lg px-3 py-1.5 text-xs text-slate-100 focus:outline-none focus:ring-1 focus:ring-amber-500 focus:border-amber-500 cursor-pointer transition-colors ${className}`}
+        className={`bg-ops-panel border border-ops-border rounded-xs px-2.5 py-1 text-xs text-txt-primary focus:outline-none focus:border-forest cursor-pointer transition-colors ${className}`}
         {...props}
       >
         {options.map((opt) => (

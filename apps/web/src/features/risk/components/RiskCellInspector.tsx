@@ -1,7 +1,7 @@
 import React from 'react';
 import { RiskPredictionProperties } from '../../../types/domain';
 import { Badge } from '../../../components/ui/Badge';
-import { Button } from '../../../components/ui/Button';
+import { TargetIcon } from '../../../components/common/Icons';
 
 export interface RiskCellInspectorProps {
   cell: RiskPredictionProperties | null;
@@ -29,121 +29,87 @@ export const RiskCellInspector: React.FC<RiskCellInspectorProps> = ({
 
   return (
     <div
-      className={`bg-slate-900/95 border border-slate-700/80 rounded-xl p-4 shadow-2xl backdrop-blur-md text-xs space-y-3 ${className}`}
+      className={`bg-ops-panel/95 border border-ops-border rounded-[3px] p-3 text-xs space-y-2.5 shadow-xl ${className}`}
       role="region"
       aria-label="Grid Cell Details Inspector"
     >
-      <div className="flex items-center justify-between pb-2 border-b border-slate-800">
-        <div className="flex items-center space-x-2">
-          <span className="text-base">📐</span>
-          <div>
-            <h4 className="font-semibold text-slate-100">500m Grid Cell Inspector</h4>
-            <span className="text-[10px] font-mono text-slate-400">ID: {cell.cell_id}</span>
-          </div>
+      <div className="flex items-center justify-between pb-1.5 border-b border-ops-border">
+        <div>
+          <h4 className="font-semibold text-txt-primary">CELL INSPECTOR</h4>
+          <span className="text-[10px] font-mono text-txt-muted">ID: {cell.cell_id}</span>
         </div>
         <button
           onClick={onClose}
-          className="text-slate-400 hover:text-slate-200 text-sm p-1 rounded hover:bg-slate-800"
+          className="text-txt-muted hover:text-txt-primary text-xs p-1 rounded hover:bg-ops-surface"
           aria-label="Close cell inspector"
         >
           ✕
         </button>
       </div>
 
-      {/* SECTION 1: RISK ESTIMATION */}
-      <div className="space-y-1.5 font-mono text-[11px]">
-        <div className="text-[10px] font-bold text-amber-400 uppercase tracking-wider">
-          Risk Classification
-        </div>
-        <div className="flex justify-between items-center py-1 border-b border-slate-800/60">
-          <span className="text-slate-400">Susceptibility Class:</span>
+      {/* Risk Estimation */}
+      <div className="space-y-1 font-mono text-[11px]">
+        <div className="flex justify-between items-center py-0.5 border-b border-ops-border">
+          <span className="text-txt-muted">Susceptibility:</span>
           <Badge variant={riskBadgeVariant} size="sm">
             {cell.risk_class}
           </Badge>
         </div>
-        <div className="flex justify-between items-center py-1 border-b border-slate-800/60">
-          <span className="text-slate-400">Fire Probability:</span>
-          <span className="font-bold text-amber-400 text-xs">
+        <div className="flex justify-between items-center py-0.5 border-b border-ops-border">
+          <span className="text-txt-muted">Probability:</span>
+          <span className="font-bold text-amber text-xs">
             {(cell.risk_probability * 100).toFixed(1)}%
           </span>
         </div>
       </div>
 
-      {/* SECTION 2: FORECAST & MODEL */}
-      <div className="space-y-1.5 font-mono text-[11px] pt-1 border-t border-slate-800/60">
-        <div className="text-[10px] font-bold text-slate-400 uppercase tracking-wider">
-          Forecast & Model Metadata
-        </div>
+      {/* Environmental Parameters */}
+      <div className="space-y-1 font-mono text-[11px] pt-1 border-t border-ops-border">
         <div className="flex justify-between items-center py-0.5">
-          <span className="text-slate-400">Model Engine:</span>
-          <span className="text-slate-200">XGBoost ({cell.model_version || 'risk-xgboost-v001'})</span>
-        </div>
-        <div className="flex justify-between items-center py-0.5">
-          <span className="text-slate-400">Forecast Window:</span>
-          <span className="text-slate-200">24-Hour Horizon</span>
-        </div>
-        {cell.prediction_timestamp && (
-          <div className="flex justify-between items-center py-0.5">
-            <span className="text-slate-400">Generated:</span>
-            <span className="text-slate-300">
-              {new Date(cell.prediction_timestamp).toLocaleTimeString([], { hour: '2-digit', minute: '2-digit' })}
-            </span>
-          </div>
-        )}
-      </div>
-
-      {/* SECTION 3: ENVIRONMENTAL INPUTS */}
-      <div className="space-y-1.5 font-mono text-[11px] pt-1 border-t border-slate-800/60">
-        <div className="text-[10px] font-bold text-slate-400 uppercase tracking-wider">
-          Environmental Inputs
-        </div>
-        <div className="flex justify-between items-center py-0.5">
-          <span className="text-slate-400">FWI Rating:</span>
-          <span className="text-slate-200">
-            {cell.fwi_index !== null && cell.fwi_index !== undefined ? cell.fwi_index.toFixed(1) : 'Not available'}
+          <span className="text-txt-muted">FWI Rating:</span>
+          <span className="text-txt-primary">
+            {cell.fwi_index !== null && cell.fwi_index !== undefined ? cell.fwi_index.toFixed(1) : 'N/A'}
           </span>
         </div>
         <div className="flex justify-between items-center py-0.5">
-          <span className="text-slate-400">Elevation:</span>
-          <span className="text-slate-200">
-            {cell.elevation !== null && cell.elevation !== undefined ? `${cell.elevation} m` : 'Not available'}
+          <span className="text-txt-muted">Elevation:</span>
+          <span className="text-txt-primary">
+            {cell.elevation !== null && cell.elevation !== undefined ? `${cell.elevation} m` : 'N/A'}
           </span>
         </div>
         <div className="flex justify-between items-center py-0.5">
-          <span className="text-slate-400">Slope:</span>
-          <span className="text-slate-200">
-            {cell.slope !== null && cell.slope !== undefined ? `${cell.slope}°` : 'Not available'}
+          <span className="text-txt-muted">Slope:</span>
+          <span className="text-txt-primary">
+            {cell.slope !== null && cell.slope !== undefined ? `${cell.slope}°` : 'N/A'}
           </span>
         </div>
         <div className="flex justify-between items-center py-0.5">
-          <span className="text-slate-400">Fuel Class:</span>
-          <span className="text-slate-200 truncate max-w-[150px]">
+          <span className="text-txt-muted">Fuel Class:</span>
+          <span className="text-txt-primary truncate max-w-[140px]">
             {cell.fuel_type || 'Conifer High'}
           </span>
         </div>
       </div>
 
-      {/* Educational Model Note */}
-      <div className="p-2 rounded bg-slate-950/60 border border-slate-800 text-[10px] text-slate-400 leading-normal">
-        ℹ️ Model-estimated susceptibility based on environmental features. Does not indicate an active ignition.
-      </div>
-
       {/* Actions */}
-      <div className="pt-2 border-t border-slate-800 flex items-center space-x-2">
+      <div className="pt-2 border-t border-ops-border flex items-center space-x-2">
         {onSimulateFromCell && (
-          <Button
-            variant="primary"
-            size="sm"
-            className="flex-1 font-semibold text-[11px]"
+          <button
+            className="flex-1 py-1 px-2 rounded-[2px] bg-forest hover:bg-forest-hover text-txt-primary font-semibold text-[11px] transition-colors flex items-center justify-center space-x-1 border border-forest-border"
             onClick={() => onSimulateFromCell(cell)}
           >
-            🎯 Simulate Spread
-          </Button>
+            <TargetIcon className="w-3 h-3" />
+            <span>Simulate Spread</span>
+          </button>
         )}
-        <Button variant="secondary" size="sm" onClick={onClose}>
+        <button
+          className="py-1 px-2 rounded-[2px] bg-ops-surface hover:bg-ops-hover text-txt-secondary border border-ops-border text-[11px] transition-colors"
+          onClick={onClose}
+        >
           Dismiss
-        </Button>
+        </button>
       </div>
     </div>
   );
 };
+

@@ -1,4 +1,11 @@
 import React from 'react';
+import {
+  GridIcon,
+  ShieldIcon,
+  ActivityIcon,
+  FlameIcon,
+  LayersIcon,
+} from './common/Icons';
 
 export type NavTab = 'overview' | 'risk' | 'simulation' | 'active_fires' | 'layers';
 
@@ -8,63 +15,55 @@ interface SidebarProps {
 }
 
 export const Sidebar: React.FC<SidebarProps> = ({ currentTab, onSelectTab }) => {
-  const navItems: { id: NavTab; label: string; icon: string; badge?: string }[] = [
-    { id: 'overview', label: 'Overview', icon: '📊' },
-    { id: 'risk', label: '24h Fire Risk', icon: '🗺️', badge: '500m' },
-    { id: 'simulation', label: '12h Spread Simulation', icon: '⏳', badge: 'CA' },
-    { id: 'active_fires', label: 'Active Hotspots', icon: '🔥' },
-    { id: 'layers', label: 'Environmental Layers', icon: '🛰️' },
+  const navItems: { id: NavTab; label: string; icon: React.ReactNode; badge?: string }[] = [
+    { id: 'overview', label: 'Overview', icon: <GridIcon className="w-4 h-4" /> },
+    { id: 'risk', label: 'Fire Risk', icon: <ShieldIcon className="w-4 h-4" />, badge: '500m' },
+    { id: 'simulation', label: 'Spread Simulation', icon: <ActivityIcon className="w-4 h-4" />, badge: 'CA' },
+    { id: 'active_fires', label: 'Active Hotspots', icon: <FlameIcon className="w-4 h-4" /> },
+    { id: 'layers', label: 'Layers', icon: <LayersIcon className="w-4 h-4" /> },
   ];
 
   return (
-    <aside className="w-64 bg-slate-900 border-r border-slate-800 flex flex-col shrink-0 select-none z-20">
-      <div className="p-4 border-b border-slate-800/60">
-        <span className="text-xs uppercase font-semibold tracking-wider text-slate-400">
-          Navigation Modules
+    <aside className="w-60 bg-ops-panel border-r border-ops-border flex flex-col shrink-0 select-none z-20 font-sans">
+      <div className="p-3 border-b border-ops-border bg-ops-subtle">
+        <span className="text-[11px] font-semibold tracking-wider text-txt-secondary uppercase font-mono">
+          Operations Nav
         </span>
       </div>
 
-      <nav className="flex-1 p-3 space-y-1">
+      <nav className="flex-1 py-2 space-y-0.5">
         {navItems.map((item) => {
           const isActive = currentTab === item.id;
           return (
             <button
               key={item.id}
               onClick={() => onSelectTab(item.id)}
-              className={`w-full flex items-center justify-between px-3 py-2.5 rounded-lg text-sm font-medium transition-all ${
+              className={`w-full flex items-center justify-between px-3.5 py-2 text-xs font-mono tracking-wider uppercase transition-colors text-left ${
                 isActive
-                  ? 'bg-amber-600/20 text-amber-400 border border-amber-500/30 shadow-sm'
-                  : 'text-slate-400 hover:text-slate-200 hover:bg-slate-800/60'
+                  ? 'bg-ops-surface text-txt-primary border-l-2 border-forest font-semibold'
+                  : 'text-txt-secondary hover:text-txt-primary hover:bg-ops-surface/50 border-l-2 border-transparent'
               }`}
             >
-              <div className="flex items-center space-x-3">
-                <span className="text-base">{item.icon}</span>
+              <div className="flex items-center space-x-2.5">
+                <span className={isActive ? 'text-forest' : 'text-txt-muted'}>{item.icon}</span>
                 <span>{item.label}</span>
               </div>
-              {item.badge && (
-                <span className="text-[10px] uppercase font-mono px-1.5 py-0.5 rounded bg-slate-800 text-slate-400 border border-slate-700">
-                  {item.badge}
-                </span>
-              )}
             </button>
           );
         })}
       </nav>
 
-      <div className="p-4 border-t border-slate-800/60 bg-slate-950/40 text-xs text-slate-400 space-y-1">
+      <div className="p-3 border-t border-ops-border bg-ops-subtle space-y-1 font-mono text-[10px] text-txt-muted">
         <div className="flex justify-between">
-          <span>Spatial Grid:</span>
-          <span className="font-mono text-slate-300">500m × 500m</span>
+          <span>GRID:</span>
+          <span className="text-txt-secondary">500M × 500M</span>
         </div>
         <div className="flex justify-between">
-          <span>Projection:</span>
-          <span className="font-mono text-slate-300">EPSG:4326</span>
-        </div>
-        <div className="flex justify-between">
-          <span>Phase:</span>
-          <span className="font-mono text-amber-400">Phase 1 Foundation</span>
+          <span>PROJECTION:</span>
+          <span className="text-txt-secondary">EPSG:4326</span>
         </div>
       </div>
     </aside>
   );
 };
+

@@ -1,6 +1,7 @@
 import React, { useEffect, useState } from 'react';
 import { apiClient } from '../services/apiClient';
 import { SystemHealth } from '../types';
+import { FlameIcon } from './common/Icons';
 
 interface HeaderProps {
   currentView: string;
@@ -30,34 +31,35 @@ export const Header: React.FC<HeaderProps> = ({ currentView }) => {
   }, []);
 
   return (
-    <header className="h-14 bg-slate-900 border-b border-slate-800 flex items-center justify-between px-5 select-none shrink-0 z-30">
+    <header className="h-10 bg-ops-panel border-b border-ops-border flex items-center justify-between px-4 select-none shrink-0 z-30 font-mono">
       <div className="flex items-center space-x-3">
-        <div className="w-8 h-8 rounded bg-gradient-to-tr from-amber-600 to-red-600 flex items-center justify-center font-bold text-white shadow-md">
-          🔥
+        <div className="w-6 h-6 rounded-xs bg-forest flex items-center justify-center text-txt-primary">
+          <FlameIcon className="w-3.5 h-3.5 text-txt-primary" />
         </div>
         <div>
-          <h1 className="font-semibold text-sm text-slate-100 tracking-wide">
-            Forest Fire Prediction & Spread Simulation
+          <h1 className="font-semibold text-xs text-txt-primary uppercase tracking-wider">
+            Wildfire Operations Platform
           </h1>
-          <p className="text-xs text-slate-400">ISRO Blueprint & Spatial GIS Platform</p>
+          <p className="text-[10px] text-txt-muted">Spatial Risk & Spread Modeling</p>
         </div>
       </div>
 
-      <div className="flex items-center space-x-4 text-xs">
-        <span className="text-slate-400 uppercase tracking-wider font-medium px-2 py-1 bg-slate-800 rounded">
+      <div className="flex items-center space-x-3 text-xs">
+        <span className="text-txt-secondary uppercase tracking-wider text-[10px] px-2 py-0.5 bg-ops-surface rounded-xs border border-ops-border">
           {currentView}
         </span>
-        <div className="flex items-center space-x-2 bg-slate-800/80 px-3 py-1.5 rounded-full border border-slate-700">
+        <div className="flex items-center space-x-2 bg-ops-surface px-2.5 py-1 rounded-xs border border-ops-border">
           <span
-            className={`w-2 h-2 rounded-full ${
-              online ? 'bg-emerald-400 animate-pulse' : 'bg-rose-500'
+            className={`w-1.5 h-1.5 rounded-full ${
+              online ? 'bg-forest' : 'bg-danger'
             }`}
           />
-          <span className="text-slate-300 font-mono">
-            {online ? `API v${health?.version || '1.0'}` : 'API Offline'}
+          <span className="text-txt-secondary font-mono text-[10px]">
+            {online ? `API v${health?.version || '1.0'}` : 'OFFLINE'}
           </span>
         </div>
       </div>
     </header>
   );
 };
+

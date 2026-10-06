@@ -52,9 +52,14 @@ export const MapContainer: React.FC<MapContainerProps> = ({
 
   // Initialize Leaflet Map
   useEffect(() => {
-    if (!containerRef.current || map) return;
+    if (!containerRef.current) return;
 
     try {
+      // Clear any prior leaflet internal ID on the DOM node to prevent StrictMode clashes
+      if ((containerRef.current as unknown as { _leaflet_id?: number | null })._leaflet_id) {
+        (containerRef.current as unknown as { _leaflet_id?: number | null })._leaflet_id = null;
+      }
+
       const leafletMap = L.map(containerRef.current, {
         center: [initialCenterLat, initialCenterLng],
         zoom: initialZoom,
@@ -69,6 +74,11 @@ export const MapContainer: React.FC<MapContainerProps> = ({
 
       setMap(leafletMap);
 
+      // Force recalculation of container dimensions once mounted in DOM
+      const timer = setTimeout(() => {
+        leafletMap.invalidateSize();
+      }, 150);
+
       // Handle map resize observer if available in environment
       let resizeObserver: ResizeObserver | null = null;
       if (typeof ResizeObserver !== 'undefined') {
@@ -79,12 +89,13 @@ export const MapContainer: React.FC<MapContainerProps> = ({
       }
 
       return () => {
+        clearTimeout(timer);
         if (resizeObserver) resizeObserver.disconnect();
         leafletMap.remove();
         setMap(null);
       };
     } catch (err) {
-      console.warn('Map initialization failed (likely headless/test environment):', err);
+      console.warn('Map initialization error:', err);
     }
   }, [initialCenterLat, initialCenterLng, initialZoom]);
 
@@ -119,7 +130,7 @@ export const MapContainer: React.FC<MapContainerProps> = ({
       }}
     >
       <div
-        className={`relative w-full h-full bg-slate-950 overflow-hidden select-none ${className}`}
+        className={`relative w-full h-full bg-ops-bg overflow-hidden select-none ${className}`}
         data-testid="map-container"
       >
         {/* Leaflet Mount Target */}

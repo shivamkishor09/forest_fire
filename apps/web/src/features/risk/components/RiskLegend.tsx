@@ -8,29 +8,29 @@ export interface RiskLegendProps {
 export const RiskLegend: React.FC<RiskLegendProps> = ({ className = '' }) => {
   return (
     <div
-      className={`bg-slate-900/95 border border-slate-700/80 rounded-xl p-3 shadow-xl backdrop-blur-md text-xs ${className}`}
+      className={`bg-ops-panel/95 border border-ops-border rounded-[3px] p-2.5 shadow-md text-xs select-none w-52 ${className}`}
     >
-      <div className="flex items-center justify-between mb-2">
-        <h4 className="font-semibold text-slate-200">Susceptibility Scale</h4>
-        <span className="text-[10px] font-mono text-slate-400">500m Cells</span>
+      <div className="flex items-center justify-between mb-1.5 pb-1 border-b border-ops-border">
+        <h4 className="font-mono text-[10px] font-semibold uppercase tracking-wider text-txt-primary">
+          SUSCEPTIBILITY SCALE
+        </h4>
+        <span className="text-[10px] font-mono text-txt-muted">500m</span>
       </div>
-      <div className="space-y-1.5 font-mono text-[11px]">
+      <div className="space-y-1 font-mono text-[10px]">
         {Object.entries(APP_CONFIG.riskColors).map(([key, config]) => (
           <div key={key} className="flex items-center justify-between">
-            <span className="flex items-center space-x-2">
+            <span className="flex items-center space-x-1.5">
               <span
-                className="w-3 h-3 rounded-sm border border-black/40"
+                className="w-2.5 h-2.5 rounded-[1px]"
                 style={{ backgroundColor: config.fillColor }}
               />
-              <span className="text-slate-300 capitalize">{config.label}</span>
+              <span className="text-txt-secondary uppercase">{config.label}</span>
             </span>
-            <span className="text-slate-400 text-[10px]">{config.threshold}</span>
+            <span className="text-txt-muted text-[10px]">{config.threshold}</span>
           </div>
         ))}
-      </div>
-      <div className="mt-2.5 pt-2 border-t border-slate-800 text-[10px] text-slate-500 italic">
-        Sample/baseline susceptibility partitions (Phase 2 contract)
       </div>
     </div>
   );
 };
+

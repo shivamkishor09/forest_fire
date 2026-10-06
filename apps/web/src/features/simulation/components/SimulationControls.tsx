@@ -1,5 +1,6 @@
 import React, { useState } from 'react';
 import { Button } from '../../../components/ui/Button';
+import { SlidersIcon, WindIcon, RotateCcwIcon, ChevronDownIcon, ChevronUpIcon } from '../../../components/common/Icons';
 
 export interface SimulationControlsProps {
   durationHours: number;
@@ -51,21 +52,21 @@ export const SimulationControls: React.FC<SimulationControlsProps> = ({
 
   return (
     <div
-      className={`bg-slate-900/90 border border-slate-800 rounded-xl p-4 text-xs space-y-3.5 ${className}`}
+      className={`bg-ops-panel border border-ops-border rounded-xs p-3.5 text-xs space-y-3.5 ${className}`}
     >
-      <div className="font-semibold text-slate-200 pb-2 border-b border-slate-800 flex items-center justify-between">
+      <div className="font-semibold text-txt-primary pb-2 border-b border-ops-border flex items-center justify-between font-mono text-[11px] uppercase tracking-wider">
         <span className="flex items-center space-x-1.5">
-          <span>⚙️</span>
+          <SlidersIcon className="w-3.5 h-3.5 text-amber" />
           <span>Simulation Parameters</span>
         </span>
-        <span className="text-[10px] font-mono text-slate-400">Cellular Automata</span>
+        <span className="text-[10px] text-txt-muted">Cellular Automata</span>
       </div>
 
       {/* Duration Selector */}
       <div className="space-y-1.5">
         <div className="flex justify-between items-center text-[11px]">
-          <span className="text-slate-300 font-medium">Spread Horizon:</span>
-          <span className="font-mono font-bold text-amber-400 bg-slate-800 px-2 py-0.5 rounded border border-slate-700">
+          <span className="text-txt-secondary font-medium uppercase font-mono text-[10px]">Spread Horizon:</span>
+          <span className="font-mono font-bold text-amber bg-ops-bg px-2 py-0.5 rounded-xs border border-ops-border">
             {durationHours} Hours
           </span>
         </div>
@@ -76,9 +77,9 @@ export const SimulationControls: React.FC<SimulationControlsProps> = ({
           step="1"
           value={durationHours}
           onChange={(e) => onDurationChange(parseInt(e.target.value, 10))}
-          className="w-full h-1.5 bg-slate-800 rounded-lg appearance-none cursor-pointer accent-amber-500"
+          className="w-full h-1.5 bg-ops-bg rounded-xs appearance-none cursor-pointer accent-forest"
         />
-        <div className="flex justify-between text-[10px] text-slate-500 font-mono">
+        <div className="flex justify-between text-[10px] text-txt-muted font-mono">
           <span>1h</span>
           <span>3h</span>
           <span>6h</span>
@@ -89,7 +90,7 @@ export const SimulationControls: React.FC<SimulationControlsProps> = ({
 
       {/* Step Interval */}
       <div className="space-y-1.5">
-        <label className="text-slate-300 font-medium text-[11px] block">
+        <label className="text-txt-secondary font-medium font-mono text-[10px] uppercase block">
           Perimeter Output Interval:
         </label>
         <div className="grid grid-cols-3 gap-1.5">
@@ -98,10 +99,10 @@ export const SimulationControls: React.FC<SimulationControlsProps> = ({
               key={interval}
               type="button"
               onClick={() => onStepMinutesChange(interval)}
-              className={`py-1.5 rounded text-[11px] font-mono font-semibold transition-colors border ${
+              className={`py-1.5 rounded-xs text-[11px] font-mono font-semibold transition-colors border ${
                 stepMinutes === interval
-                  ? 'bg-amber-600/30 border-amber-500 text-amber-400'
-                  : 'bg-slate-800/80 border-slate-700 text-slate-400 hover:text-slate-200'
+                  ? 'bg-forest/20 border-forest text-txt-primary'
+                  : 'bg-ops-bg border-ops-border text-txt-secondary hover:text-txt-primary'
               }`}
             >
               {interval} min
@@ -111,28 +112,29 @@ export const SimulationControls: React.FC<SimulationControlsProps> = ({
       </div>
 
       {/* Weather & Environmental Scenario Overrides Toggle */}
-      <div className="pt-1 border-t border-slate-800/80">
+      <div className="pt-1 border-t border-ops-border">
         <button
           type="button"
           onClick={() => setShowAdvanced(!showAdvanced)}
-          className="w-full flex items-center justify-between text-[11px] text-slate-400 hover:text-slate-200 py-1 transition-colors"
+          className="w-full flex items-center justify-between text-[11px] text-txt-secondary hover:text-txt-primary py-1 transition-colors"
         >
-          <span className="flex items-center space-x-1.5">
-            <span>🌬️</span>
+          <span className="flex items-center space-x-1.5 font-mono text-[11px] uppercase">
+            <WindIcon className="w-3.5 h-3.5 text-txt-muted" />
             <span className="font-medium">Weather & Fuel Overrides</span>
           </span>
-          <span className="text-[10px] font-mono text-slate-500">
-            {showAdvanced ? '▲ Hide' : '▼ Adjust'}
+          <span className="text-[10px] font-mono text-txt-muted flex items-center space-x-1">
+            <span>{showAdvanced ? 'Hide' : 'Configure'}</span>
+            {showAdvanced ? <ChevronUpIcon className="w-3 h-3" /> : <ChevronDownIcon className="w-3 h-3" />}
           </span>
         </button>
 
         {showAdvanced && (
-          <div className="mt-2.5 space-y-3 p-2.5 rounded-lg bg-slate-950/60 border border-slate-800">
+          <div className="mt-2.5 space-y-3 p-2.5 rounded-xs bg-ops-bg border border-ops-border">
             {/* Wind Speed */}
             <div className="space-y-1">
-              <div className="flex justify-between text-[10px]">
-                <span className="text-slate-400">Wind Speed:</span>
-                <span className="font-mono text-amber-400">
+              <div className="flex justify-between text-[10px] font-mono">
+                <span className="text-txt-muted uppercase">Wind Speed:</span>
+                <span className="text-amber font-semibold">
                   {windSpeedMs} m/s ({windKmh} km/h)
                 </span>
               </div>
@@ -145,15 +147,15 @@ export const SimulationControls: React.FC<SimulationControlsProps> = ({
                 onChange={(e) =>
                   onWindSpeedChange && onWindSpeedChange(parseFloat(e.target.value))
                 }
-                className="w-full h-1 bg-slate-800 rounded appearance-none cursor-pointer accent-amber-500"
+                className="w-full h-1 bg-ops-surface rounded appearance-none cursor-pointer accent-forest"
               />
             </div>
 
             {/* Wind Direction */}
             <div className="space-y-1">
-              <div className="flex justify-between text-[10px]">
-                <span className="text-slate-400">Wind Direction:</span>
-                <span className="font-mono text-amber-400">
+              <div className="flex justify-between text-[10px] font-mono">
+                <span className="text-txt-muted uppercase">Wind Direction:</span>
+                <span className="text-amber font-semibold">
                   {windDirectionDeg}° ({getCardinalDirection(windDirectionDeg)})
                 </span>
               </div>
@@ -166,17 +168,17 @@ export const SimulationControls: React.FC<SimulationControlsProps> = ({
                 onChange={(e) =>
                   onWindDirectionChange && onWindDirectionChange(parseInt(e.target.value, 10))
                 }
-                className="w-full h-1 bg-slate-800 rounded appearance-none cursor-pointer accent-amber-500"
+                className="w-full h-1 bg-ops-surface rounded appearance-none cursor-pointer accent-forest"
               />
             </div>
 
             {/* Fuel Type */}
             <div className="space-y-1">
-              <span className="text-[10px] text-slate-400 block">Fuel Classification:</span>
+              <span className="text-[10px] text-txt-muted font-mono uppercase block">Fuel Classification:</span>
               <select
                 value={fuelType}
                 onChange={(e) => onFuelTypeChange && onFuelTypeChange(e.target.value)}
-                className="w-full bg-slate-800 border border-slate-700 rounded px-2 py-1 text-[11px] text-slate-200 focus:outline-none focus:border-amber-500"
+                className="w-full bg-ops-panel border border-ops-border rounded-xs px-2 py-1 text-[11px] text-txt-primary focus:outline-none focus:border-forest font-mono"
               >
                 <option value="CONIFER_HIGH_FLAMMABILITY">Conifer Forest (High)</option>
                 <option value="PINE_MODERATE_FLAMMABILITY">Pine Forest (Moderate)</option>
@@ -193,10 +195,11 @@ export const SimulationControls: React.FC<SimulationControlsProps> = ({
         <Button
           variant="primary"
           size="md"
-          className="w-full font-semibold"
+          className="w-full font-semibold uppercase tracking-wider font-mono text-xs"
           disabled={!hasIgnition || isSubmitting}
           isLoading={isSubmitting}
           onClick={onStartSimulation}
+          aria-label="Initialize 12h Simulation"
         >
           {isSubmitting ? 'Dispatching Job...' : 'Initialize 12h Simulation'}
         </Button>
@@ -205,10 +208,11 @@ export const SimulationControls: React.FC<SimulationControlsProps> = ({
           <Button
             variant="secondary"
             size="sm"
-            className="w-full font-mono text-[11px]"
+            className="w-full font-mono text-[11px] flex items-center justify-center space-x-1"
             onClick={onReplaySimulation}
           >
-            🔁 Replay Simulation
+            <RotateCcwIcon className="w-3.5 h-3.5" />
+            <span>Replay Simulation</span>
           </Button>
         )}
 
@@ -216,15 +220,16 @@ export const SimulationControls: React.FC<SimulationControlsProps> = ({
           <Button
             variant="secondary"
             size="sm"
-            className="w-full font-mono text-[10px] text-slate-400 hover:text-rose-400"
+            className="w-full font-mono text-[10px] text-txt-muted hover:text-danger"
             onClick={onClearIgnition}
+            aria-label="Reset Ignition Point"
           >
-            ✕ Reset Ignition Point
+            Reset Ignition Point
           </Button>
         )}
 
         {!hasIgnition && (
-          <p className="text-[10px] text-amber-400/80 text-center mt-1.5">
+          <p className="text-[10px] text-amber/90 font-mono text-center mt-1.5">
             Select an ignition point to begin simulation.
           </p>
         )}
@@ -232,3 +237,4 @@ export const SimulationControls: React.FC<SimulationControlsProps> = ({
     </div>
   );
 };
+

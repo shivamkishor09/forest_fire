@@ -2,7 +2,7 @@
  * Domain entity types conforming to DATA_CONTRACTS.md and Phase 2 backend
  */
 
-import { BoundingBox } from './geo';
+import { BoundingBox, GeoJSONFeature, PolygonGeometry, MultiPolygonGeometry } from './geo';
 
 export type RiskClass = 'LOW' | 'MODERATE' | 'HIGH' | 'EXTREME';
 
@@ -27,6 +27,7 @@ export interface RegionDetail extends RegionSummary {
   description?: string;
   grid_resolution_meters: number;
   total_cells?: number;
+  boundary?: GeoJSONFeature<PolygonGeometry | MultiPolygonGeometry, RegionSummary>;
   created_at?: string;
   updated_at?: string;
 }

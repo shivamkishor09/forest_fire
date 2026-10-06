@@ -37,7 +37,7 @@ export const AppLayout: React.FC<AppLayoutProps> = ({
   };
 
   return (
-    <div className="h-screen w-screen flex flex-col bg-slate-950 overflow-hidden font-sans">
+    <div className="h-screen w-screen flex flex-col bg-ops-bg overflow-hidden font-sans">
       <Header
         currentView={tabTitles[currentTab]}
         regions={regions}

@@ -3,6 +3,7 @@ import { fetchHealth } from '../../services/api/health';
 import { SystemHealth } from '../../types/api';
 import { RegionSummary } from '../../types/domain';
 import { RegionSelector } from '../../features/regions/components/RegionSelector';
+import { FlameIcon } from '../common/Icons';
 
 export interface HeaderProps {
   currentView: string;
@@ -13,17 +14,20 @@ export interface HeaderProps {
 }
 
 export const Header: React.FC<HeaderProps> = ({
-  currentView,
+  currentView: _currentView,
   regions,
   selectedRegionId,
   onSelectRegion,
   isLoadingRegions = false,
 }) => {
   const [health, setHealth] = useState<SystemHealth | null>(null);
-  const [online, setOnline] = useState<boolean>(false);
-  const [currentTime, setCurrentTime] = useState<string>(() => {
+  const [online, setOnline] = useState<boolean>(true);
+  const [times, setTimes] = useState<{ utc: string; local: string }>(() => {
     const now = new Date();
-    return `${now.toISOString().slice(11, 19)} UTC · ${now.toLocaleTimeString([], { hour: '2-digit', minute: '2-digit' })} Local`;
+    return {
+      utc: now.toISOString().slice(11, 19),
+      local: now.toLocaleTimeString([], { hour: '2-digit', minute: '2-digit', second: '2-digit', hour12: false }),
+    };
   });
 
   useEffect(() => {
@@ -43,9 +47,10 @@ export const Header: React.FC<HeaderProps> = ({
       const timer = setInterval(() => {
         if (mounted) {
           const now = new Date();
-          setCurrentTime(
-            `${now.toISOString().slice(11, 19)} UTC · ${now.toLocaleTimeString([], { hour: '2-digit', minute: '2-digit' })} Local`
-          );
+          setTimes({
+            utc: now.toISOString().slice(11, 19),
+            local: now.toLocaleTimeString([], { hour: '2-digit', minute: '2-digit', second: '2-digit', hour12: false }),
+          });
         }
       }, 1000);
 
@@ -61,34 +66,33 @@ export const Header: React.FC<HeaderProps> = ({
   }, []);
 
   return (
-    <header className="h-14 bg-slate-900 border-b border-slate-800 flex items-center justify-between px-3 sm:px-5 select-none shrink-0 z-30">
-      {/* Brand & Title */}
+    <header className="h-12 bg-ops-subtle border-b border-ops-border flex items-center justify-between px-4 select-none shrink-0 z-30">
+      {/* LEFT: System Title & Operational Descriptor */}
       <div className="flex items-center space-x-3">
-        <div className="w-8 h-8 rounded-lg bg-gradient-to-tr from-amber-600 to-rose-600 flex items-center justify-center font-bold text-white shadow-md text-base">
-          🔥
+        <div className="w-7 h-7 rounded-[3px] bg-forest/20 border border-forest/40 flex items-center justify-center text-forest">
+          <FlameIcon className="w-4 h-4" />
         </div>
         <div>
-          <h1 className="font-semibold text-xs sm:text-sm text-slate-100 tracking-wide flex items-center space-x-2">
-            <span>ISRO Forest Fire Platform</span>
-            <span className="hidden lg:inline text-[10px] font-mono px-1.5 py-0.5 rounded bg-amber-950/80 text-amber-400 border border-amber-800">
-              500m Grid
-            </span>
-          </h1>
-          <p className="text-[10px] text-slate-400 hidden sm:block">
-            Predictive Susceptibility & 12h Spread Simulation
-          </p>
+          <div className="text-[14px] font-semibold text-txt-primary tracking-tight leading-tight">
+            Wildfire Operations Platform
+          </div>
+          <div className="text-[11px] text-txt-muted leading-tight">
+            Predictive Fire Risk & Spread Modeling · ISRO Forest Fire Platform
+          </div>
         </div>
       </div>
 
-      {/* Clock & Data Freshness Indicator */}
-      <div className="hidden xl:flex items-center space-x-3 font-mono text-[11px] text-slate-400 bg-slate-950/60 px-3 py-1 rounded-lg border border-slate-800">
-        <span className="text-slate-300">🕒 {currentTime}</span>
-        <span className="text-slate-600">|</span>
-        <span className="text-amber-400/90 font-medium">24h Horizon Forecast</span>
+      {/* CENTER: Operational UTC / Local Clock & Horizon */}
+      <div className="hidden md:flex items-center space-x-3 font-mono text-[11px] text-txt-secondary">
+        <span className="text-txt-primary font-medium">{times.utc} UTC</span>
+        <span className="text-ops-border">/</span>
+        <span>{times.local} Local</span>
+        <span className="text-ops-border">/</span>
+        <span className="text-amber font-semibold">24H Horizon</span>
       </div>
 
-      {/* Region Selector & Status */}
-      <div className="flex items-center space-x-2.5">
+      {/* RIGHT: Region Selector & Operational Status */}
+      <div className="flex items-center space-x-3">
         <RegionSelector
           regions={regions}
           selectedRegionId={selectedRegionId}
@@ -96,26 +100,22 @@ export const Header: React.FC<HeaderProps> = ({
           isLoading={isLoadingRegions}
         />
 
-        {/* Current View Pill */}
-        <span className="text-slate-300 uppercase tracking-wider font-semibold text-[10px] px-2.5 py-1 bg-slate-800 rounded hidden md:inline border border-slate-700">
-          {currentView}
-        </span>
-
-        {/* System Health Indicator */}
+        {/* Operational Status */}
         <div
-          className="flex items-center space-x-2 bg-slate-800/80 px-2.5 py-1 rounded-full border border-slate-700 text-xs"
-          title={`Backend Services: PostGIS (${health?.services?.database || 'OK'}), Celery (${health?.services?.celery_broker || 'OK'}), Models (Online)`}
+          className="flex items-center space-x-2 pl-2 border-l border-ops-border"
+          title={`Backend Services: ${health?.status || 'Connected'}`}
         >
           <span
             className={`w-2 h-2 rounded-full ${
-              online ? 'bg-emerald-400 animate-pulse' : 'bg-rose-500'
+              online ? 'bg-forest' : 'bg-danger'
             }`}
           />
-          <span className="text-slate-300 font-mono text-[11px] hidden sm:inline">
-            {online ? `System Operational` : 'Offline Mode'}
+          <span className="font-mono text-[11px] font-semibold tracking-wider text-txt-primary">
+            {online ? 'OPERATIONAL' : 'OFFLINE'}
           </span>
         </div>
       </div>
     </header>
   );
 };
+

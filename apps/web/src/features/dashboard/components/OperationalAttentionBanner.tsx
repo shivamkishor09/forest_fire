@@ -1,5 +1,6 @@
 import React from 'react';
 import { NavTab } from '../../../components/layout/Navigation';
+import { AlertCircleIcon, AlertTriangleIcon, InfoIcon, ChevronRightIcon } from '../../../components/common/Icons';
 
 export interface OperationalAttentionBannerProps {
   regionName?: string;
@@ -18,7 +19,7 @@ export const OperationalAttentionBanner: React.FC<OperationalAttentionBannerProp
   highRiskCellCount,
   extremeRiskCellCount,
   maxProbability,
-  forecastDate,
+  forecastDate: _forecastDate,
   onNavigateTab,
   className = '',
 }) => {
@@ -27,53 +28,54 @@ export const OperationalAttentionBanner: React.FC<OperationalAttentionBannerProp
   // Determine operational attention level
   let severity: 'HIGH_ATTENTION' | 'WARNING' | 'INFO' = 'INFO';
   let title = 'Sector Operational Baseline';
-  let message = `Normal baseline state for ${regionName}. No active thermal hotspots or elevated fire fronts detected in the 500m grid.`;
-  let actionLabel = 'Explore Environmental Context';
+  let message = `Normal baseline state for ${regionName}. No active thermal hotspots or elevated fire fronts detected.`;
+  let actionLabel = 'Environmental Data';
   let targetTab: NavTab = 'layers';
+  let icon = <InfoIcon className="w-4 h-4 text-forest" />;
 
   if (extremeRiskCellCount > 0 || (highRiskCellCount > 0 && activeFireCount > 0)) {
     severity = 'HIGH_ATTENTION';
     title = 'High Operational Attention Required';
-    message = `${elevatedRiskTotal} grid cells exhibit elevated or extreme fire susceptibility in ${regionName} (Peak probability: ${(maxProbability * 100).toFixed(0)}%)${
-      activeFireCount > 0 ? ` with ${activeFireCount} active thermal hotspots detected` : ''
-    }. Recommend aerial/ground verification.`;
+    message = `${elevatedRiskTotal} cells exhibit elevated fire risk in ${regionName} (Peak: ${(maxProbability * 100).toFixed(0)}%)${
+      activeFireCount > 0 ? ` with ${activeFireCount} active thermal hotspots` : ''
+    }.`;
     actionLabel = 'Inspect 24h Risk Layer';
     targetTab = 'risk';
+    icon = <AlertCircleIcon className="w-4 h-4 text-danger" />;
   } else if (activeFireCount > 0) {
     severity = 'WARNING';
     title = 'Active Satellite Thermal Anomalies Detected';
-    message = `${activeFireCount} thermal hotspots observed by VIIRS/MODIS sensors within the past 24-hour observation window in ${regionName}.`;
+    message = `${activeFireCount} thermal hotspots detected by satellite sensors in ${regionName}.`;
     actionLabel = 'View Active Hotspots';
     targetTab = 'active_fires';
+    icon = <AlertTriangleIcon className="w-4 h-4 text-amber" />;
   } else if (highRiskCellCount > 0) {
     severity = 'WARNING';
-    title = 'Elevated Fire Susceptibility Detected';
-    message = `${highRiskCellCount} grid cells are estimated in the high susceptibility class for the ${forecastDate || '24h'} forecast window.`;
-    actionLabel = 'Review Risk Forecast';
+    title = 'Elevated Risk Detected';
+    message = `${highRiskCellCount} grid cells are estimated in the high susceptibility class in ${regionName}.`;
+    actionLabel = 'Inspect 24h Risk Layer';
     targetTab = 'risk';
+    icon = <AlertTriangleIcon className="w-4 h-4 text-amber" />;
   }
 
   const severityStyles = {
     HIGH_ATTENTION: {
-      border: 'border-rose-500/40 bg-rose-950/20',
-      badge: 'bg-rose-500/20 text-rose-300 border-rose-500/40',
-      title: 'text-rose-400',
-      icon: '🚨',
-      btn: 'bg-rose-600/30 text-rose-200 border-rose-500/50 hover:bg-rose-600/40',
+      border: 'border-danger/40 bg-danger/10',
+      badge: 'bg-danger/20 text-danger border-danger/40',
+      title: 'text-danger font-semibold',
+      btn: 'bg-danger hover:bg-danger-hover text-txt-primary border-danger-border',
     },
     WARNING: {
-      border: 'border-amber-500/40 bg-amber-950/20',
-      badge: 'bg-amber-500/20 text-amber-300 border-amber-500/40',
-      title: 'text-amber-400',
-      icon: '⚠️',
-      btn: 'bg-amber-600/30 text-amber-200 border-amber-500/50 hover:bg-amber-600/40',
+      border: 'border-amber/40 bg-amber/10',
+      badge: 'bg-amber/20 text-amber border-amber/40',
+      title: 'text-amber font-semibold',
+      btn: 'bg-amber hover:bg-amber-hover text-ops-bg border-amber-border font-semibold',
     },
     INFO: {
-      border: 'border-sky-500/30 bg-sky-950/20',
-      badge: 'bg-sky-500/20 text-sky-300 border-sky-500/30',
-      title: 'text-sky-400',
-      icon: '🛡️',
-      btn: 'bg-sky-600/30 text-sky-200 border-sky-500/40 hover:bg-sky-600/40',
+      border: 'border-ops-border bg-ops-subtle',
+      badge: 'bg-ops-surface text-txt-secondary border-ops-border',
+      title: 'text-txt-primary font-medium',
+      btn: 'bg-ops-surface hover:bg-ops-hover text-txt-primary border-ops-border',
     },
   };
 
@@ -81,43 +83,35 @@ export const OperationalAttentionBanner: React.FC<OperationalAttentionBannerProp
 
   return (
     <div
-      className={`rounded-xl border p-3.5 backdrop-blur-sm shadow-md transition-all ${style.border} ${className}`}
+      className={`rounded-[3px] border px-3.5 py-2 transition-colors ${style.border} ${className}`}
       role="region"
-      aria-label="Operational Attention Advisory"
+      aria-label="Operational Status"
     >
-      <div className="flex flex-col sm:flex-row items-start sm:items-center justify-between gap-3">
-        <div className="space-y-1">
+      <div className="flex flex-col sm:flex-row items-start sm:items-center justify-between gap-2.5">
+        <div className="space-y-0.5">
           <div className="flex items-center space-x-2">
-            <span className="text-base">{style.icon}</span>
-            <span
-              className={`text-[10px] font-mono uppercase font-bold px-2 py-0.5 rounded border ${style.badge}`}
-            >
-              {severity === 'HIGH_ATTENTION'
-                ? 'High Attention'
-                : severity === 'WARNING'
-                ? 'Warning'
-                : 'Advisory'}
+            {icon}
+            <span className={`text-[10px] font-mono uppercase font-semibold px-1.5 py-0.2 rounded-[2px] border ${style.badge}`}>
+              {severity === 'HIGH_ATTENTION' ? 'CRITICAL' : severity === 'WARNING' ? 'WARNING' : 'NORMAL'}
             </span>
-            <span className={`font-semibold text-xs tracking-tight ${style.title}`}>
+            <span className={`text-xs ${style.title}`}>
               {title}
             </span>
           </div>
-          <p className="text-[11px] text-slate-300 leading-relaxed max-w-3xl">
+          <p className="text-xs text-txt-secondary leading-normal">
             {message}
-          </p>
-          <p className="text-[10px] text-slate-500 font-mono">
-            * Operational intelligence derived from XGBoost 24h predictions and FIRMS satellite observations.
           </p>
         </div>
 
         <button
           onClick={() => onNavigateTab(targetTab)}
-          className={`shrink-0 px-3 py-1.5 rounded-lg border text-xs font-semibold transition-colors flex items-center space-x-1.5 ${style.btn}`}
+          className={`shrink-0 px-2.5 py-1 rounded-[3px] border text-xs font-medium transition-colors flex items-center space-x-1 ${style.btn}`}
         >
           <span>{actionLabel}</span>
-          <span>→</span>
+          <ChevronRightIcon className="w-3.5 h-3.5" />
         </button>
       </div>
     </div>
   );
 };
+

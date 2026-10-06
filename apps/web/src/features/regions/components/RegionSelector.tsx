@@ -1,5 +1,6 @@
 import React, { useState, useMemo } from 'react';
 import { RegionSummary } from '../../../types/domain';
+import { SearchIcon } from '../../../components/common/Icons';
 
 export interface RegionSelectorProps {
   regions: RegionSummary[];
@@ -32,7 +33,7 @@ export const RegionSelector: React.FC<RegionSelectorProps> = ({
 
   return (
     <div className={`flex items-center space-x-1.5 ${className}`}>
-      <span className="text-slate-400 font-medium text-xs hidden md:inline">Region:</span>
+      <span className="text-txt-muted text-xs hidden md:inline">Sector:</span>
 
       {showSearch ? (
         <div className="flex items-center space-x-1">
@@ -40,8 +41,8 @@ export const RegionSelector: React.FC<RegionSelectorProps> = ({
             type="text"
             value={searchQuery}
             onChange={(e) => setSearchQuery(e.target.value)}
-            placeholder="Search sector/state..."
-            className="w-36 sm:w-44 bg-slate-800 border border-slate-700 rounded-lg px-2 py-1 text-xs text-slate-100 placeholder-slate-500 focus:outline-none focus:border-amber-500"
+            placeholder="Filter sector..."
+            className="w-32 sm:w-40 bg-ops-panel border border-ops-border rounded-[3px] px-2 py-1 text-xs text-txt-primary placeholder-txt-muted focus:outline-none focus:border-forest"
             autoFocus
           />
           <button
@@ -50,7 +51,7 @@ export const RegionSelector: React.FC<RegionSelectorProps> = ({
               setSearchQuery('');
               setShowSearch(false);
             }}
-            className="text-slate-400 hover:text-slate-200 text-xs px-1"
+            className="text-txt-muted hover:text-txt-primary text-xs px-1"
             title="Close Search"
           >
             ✕
@@ -60,11 +61,11 @@ export const RegionSelector: React.FC<RegionSelectorProps> = ({
         <button
           type="button"
           onClick={() => setShowSearch(true)}
-          className="text-slate-400 hover:text-amber-400 p-1 rounded hover:bg-slate-800 text-xs transition-colors hidden sm:inline"
+          className="text-txt-muted hover:text-txt-primary p-1 rounded-[3px] hover:bg-ops-surface transition-colors hidden sm:inline-flex items-center"
           title="Filter Region List"
           aria-label="Filter regions"
         >
-          🔍
+          <SearchIcon className="w-3.5 h-3.5" />
         </button>
       )}
 
@@ -72,17 +73,17 @@ export const RegionSelector: React.FC<RegionSelectorProps> = ({
         value={selectedRegionId}
         disabled={isLoading || regions.length === 0}
         onChange={(e) => onSelectRegion(e.target.value)}
-        className="bg-slate-800/90 border border-slate-700/80 rounded-lg px-2.5 py-1.5 text-xs text-slate-100 font-medium focus:outline-none focus:ring-1 focus:ring-amber-500 cursor-pointer disabled:opacity-50 max-w-[200px] sm:max-w-[260px] truncate"
+        className="bg-ops-panel border border-ops-border rounded-[3px] px-2.5 py-1 text-xs text-txt-primary font-medium focus:outline-none focus:border-forest cursor-pointer disabled:opacity-50 max-w-[180px] sm:max-w-[240px] truncate"
         aria-label="Select Monitored Forest Region"
       >
         {regions.length === 0 ? (
-          <option value="">{isLoading ? 'Loading regions...' : 'No regions available'}</option>
+          <option value="">{isLoading ? 'Loading regions...' : 'No regions'}</option>
         ) : filteredRegions.length === 0 ? (
-          <option value="">No regions match "{searchQuery}"</option>
+          <option value="">No matches</option>
         ) : (
           filteredRegions.map((r) => (
             <option key={r.id} value={r.id}>
-              {r.name} ({r.code})
+              {r.name}
             </option>
           ))
         )}

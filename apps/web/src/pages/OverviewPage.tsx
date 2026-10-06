@@ -30,16 +30,18 @@ export const OverviewPage: React.FC<OverviewPageProps> = ({
   const { filteredFeatures, totalCount: activeFireCount } = useActiveFires(selectedRegion?.id);
   const { riskData, summary: riskSummary } = useRisk(selectedRegion?.id);
 
-  const meanRisk = riskSummary?.mean_probability || 0.28;
-  const gridCells = riskSummary?.total_cells || 11362;
+  const meanRisk = riskSummary?.mean_probability || 0.0042;
+  const gridCells = riskSummary?.total_cells || 1400;
   const highRiskCells = riskSummary?.high_risk_cells || 0;
   const extremeRiskCells = riskSummary?.extreme_risk_cells || 0;
-  const maxRisk = riskSummary?.max_probability || 0;
+  const maxRisk = riskSummary?.mean_probability || 0.0042;
+
+  const regionName = (selectedRegion?.name || 'Garhwal Forest Division').toUpperCase();
 
   return (
-    <div className="flex-1 flex flex-col h-full overflow-hidden bg-slate-950">
-      {/* Top Metric Summary Ribbon & Operational Attention */}
-      <div className="p-3.5 bg-slate-900/70 border-b border-slate-800 shrink-0 space-y-2.5">
+    <div className="flex-1 flex flex-col h-full overflow-hidden bg-ops-bg">
+      {/* Operational Summary Bar + Attention Banner */}
+      <div className="bg-ops-subtle border-b border-ops-border p-2.5 shrink-0 space-y-2">
         <MetricGrid
           regionCount={regions.length}
           activeFireCount={activeFireCount}
@@ -59,10 +61,10 @@ export const OverviewPage: React.FC<OverviewPageProps> = ({
         />
       </div>
 
-      {/* Main Interactive Overview GIS Canvas */}
+      {/* Hero GIS Map Viewport */}
       <div className="flex-1 relative overflow-hidden">
         <MapContainer>
-          {/* Spatial Layers */}
+          {/* GIS Layers */}
           <RegionLayer boundaryFeature={boundary} />
           <RiskLayer riskData={riskData} />
           <FireLayer
@@ -73,54 +75,53 @@ export const OverviewPage: React.FC<OverviewPageProps> = ({
             }
           />
 
-          {/* Floating Controls */}
-          <div className="absolute top-4 right-4 z-[400] flex flex-col space-y-2 pointer-events-auto">
+          {/* Unified Map Controls (Top-Right) */}
+          <div className="absolute top-3 right-3 z-[400] flex flex-col space-y-2 pointer-events-auto">
             <LayerControls />
             <MapControls />
           </div>
 
-          {/* Floating Legend */}
-          <div className="absolute bottom-6 left-4 z-[400] pointer-events-auto">
-            <MapLegend />
-          </div>
-
-          {/* Quick Action Navigation Card */}
-          <div className="absolute top-4 left-4 z-[400] bg-slate-900/90 border border-slate-700/80 rounded-xl p-3.5 shadow-xl backdrop-blur-md text-xs pointer-events-auto max-w-xs space-y-2.5">
-            <div className="font-semibold text-slate-100 flex items-center justify-between">
-              <span className="flex items-center space-x-1.5 truncate">
-                <span>📍</span>
-                <span className="truncate">{selectedRegion?.name || 'Garhwal Western Himalaya'}</span>
-              </span>
-              <span className="text-[10px] font-mono px-1.5 py-0.5 rounded bg-slate-800 text-slate-400">
-                {selectedRegion?.code || 'SECTOR'}
-              </span>
+          {/* Professional Compact Region Overlay (Top-Left) */}
+          <div className="absolute top-3 left-3 z-[400] bg-ops-panel/95 border border-ops-border rounded-[3px] p-2.5 text-xs pointer-events-auto shadow-md">
+            <div className="text-[13px] font-bold font-mono tracking-wide text-txt-primary">
+              {regionName}
             </div>
-            <p className="text-[11px] text-slate-400 leading-relaxed">
-              Operational sector view. 500m grid active with automated satellite thermal hotspot overlay.
-            </p>
-            <div className="grid grid-cols-3 gap-1.5 pt-1 border-t border-slate-800">
+            <div className="text-[10px] font-mono text-txt-muted pb-2">
+              500 m GRID · EPSG:4326
+            </div>
+            <div className="flex items-center space-x-1.5 pt-1.5 border-t border-ops-border font-mono text-[11px]">
               <button
                 onClick={() => onNavigateTab('risk')}
-                className="px-2 py-1.5 rounded-lg bg-amber-600/30 border border-amber-500/50 text-amber-400 font-semibold hover:bg-amber-600/40 text-[10px] transition-colors text-center"
+                className="px-2.5 py-1 rounded-[2px] bg-ops-surface hover:bg-ops-hover text-txt-primary border border-ops-border transition-colors font-medium"
               >
-                24h Risk →
+                24H RISK
               </button>
               <button
                 onClick={() => onNavigateTab('active_fires')}
-                className="px-2 py-1.5 rounded-lg bg-rose-600/30 border border-rose-500/50 text-rose-300 font-semibold hover:bg-rose-600/40 text-[10px] transition-colors text-center"
+                className={`px-2.5 py-1 rounded-[2px] border transition-colors font-medium ${
+                  activeFireCount > 0
+                    ? 'bg-danger/15 text-danger border-danger/40'
+                    : 'bg-ops-surface hover:bg-ops-hover text-txt-primary border-ops-border'
+                }`}
               >
-                Fires ({activeFireCount}) →
+                HOTSPOTS ({activeFireCount})
               </button>
               <button
                 onClick={() => onNavigateTab('simulation')}
-                className="px-2 py-1.5 rounded-lg bg-slate-800 border border-slate-700 text-slate-300 font-semibold hover:bg-slate-700 text-[10px] transition-colors text-center"
+                className="px-2.5 py-1 rounded-[2px] bg-forest/20 hover:bg-forest/30 text-forest border border-forest/40 transition-colors font-semibold"
               >
-                Simulate →
+                SIMULATE
               </button>
             </div>
+          </div>
+
+          {/* Professional GIS Legend (Bottom-Left) */}
+          <div className="absolute bottom-3 left-3 z-[400] pointer-events-auto">
+            <MapLegend />
           </div>
         </MapContainer>
       </div>
     </div>
   );
 };
+
