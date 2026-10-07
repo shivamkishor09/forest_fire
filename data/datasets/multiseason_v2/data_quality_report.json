@@ -1,0 +1,65 @@
+{
+  "status": "passed",
+  "splits_audit": {
+    "train_samples": 4442,
+    "val_samples": 18502,
+    "test_samples": 1227,
+    "train_date_range": [
+      "2022-05-01",
+      "2023-05-23"
+    ],
+    "val_date_range": [
+      "2024-03-01",
+      "2024-05-25"
+    ],
+    "test_date_range": [
+      "2025-03-01",
+      "2025-05-24"
+    ],
+    "date_overlap": [],
+    "leakage_detected": false,
+    "temporal_ordering_valid": true
+  },
+  "train_quality": {
+    "dataset_name": "train",
+    "total_rows": 4442,
+    "positive_samples": 262,
+    "negative_samples": 4180,
+    "positive_percentage": 5.9,
+    "imbalance_ratio": 15.95,
+    "duplicate_records": 0,
+    "columns_with_nulls": {},
+    "range_violations": {},
+    "is_valid": true,
+    "issues": [],
+    "warnings": []
+  },
+  "val_quality": {
+    "dataset_name": "validation",
+    "total_rows": 18502,
+    "positive_samples": 1147,
+    "negative_samples": 17355,
+    "positive_percentage": 6.2,
+    "imbalance_ratio": 15.13,
+    "duplicate_records": 0,
+    "columns_with_nulls": {},
+    "range_violations": {},
+    "is_valid": true,
+    "issues": [],
+    "warnings": []
+  },
+  "test_quality": {
+    "dataset_name": "test",
+    "total_rows": 1227,
+    "positive_samples": 72,
+    "negative_samples": 1155,
+    "positive_percentage": 5.87,
+    "imbalance_ratio": 16.04,
+    "duplicate_records": 0,
+    "columns_with_nulls": {},
+    "range_violations": {},
+    "is_valid": true,
+    "issues": [],
+    "warnings": []
+  }
+}

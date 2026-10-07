@@ -23,9 +23,23 @@ class RiskPredictor:
         self.model = model
 
     @staticmethod
-    def classify_probability(prob: float) -> RiskClass:
-        """Derive centralized risk classification using platform settings."""
+    def classify_probability(prob: float, thresholds: Optional[dict] = None) -> RiskClass:
+        """Derive centralized risk classification using model thresholds or platform settings."""
+        if thresholds and "LOW_MAX" in thresholds and "MODERATE_MAX" in thresholds and "HIGH_MAX" in thresholds:
+            if prob < thresholds["LOW_MAX"]:
+                return RiskClass.LOW
+            elif prob < thresholds["MODERATE_MAX"]:
+                return RiskClass.MODERATE
+            elif prob < thresholds["HIGH_MAX"]:
+                return RiskClass.HIGH
+            else:
+                return RiskClass.EXTREME
         return settings.classify_probability(prob)
+
+    def classify_model_probability(self, prob: float) -> RiskClass:
+        """Classify probability using this predictor's model thresholds."""
+        return self.classify_probability(prob, getattr(self.model, "thresholds", None))
+
 
     def predict_risk(self, inference_input: RiskInferenceInput) -> RiskPrediction:
         """
@@ -41,7 +55,7 @@ class RiskPredictor:
         forecast_end = pred_time + timedelta(hours=24)
 
         probability = float(self.model.predict_susceptibility(inference_input.features))
-        risk_class = self.classify_probability(probability)
+        risk_class = self.classify_model_probability(probability)
 
         top_importances = getattr(self.model, "feature_importances", None)
         if top_importances:
@@ -99,7 +113,7 @@ class RiskPredictor:
                 RiskPrediction(
                     grid_cell_id=item.grid_cell_id,
                     probability=p_val,
-                    risk_class=self.classify_probability(p_val),
+                    risk_class=self.classify_model_probability(p_val),
                     model_version=self.model.model_version,
                     prediction_timestamp=p_time.isoformat(),
                     forecast_start=p_time.isoformat(),
@@ -151,7 +165,7 @@ class RiskPredictor:
                 RiskPrediction(
                     grid_cell_id=cid,
                     probability=p_val,
-                    risk_class=self.classify_probability(p_val),
+                    risk_class=self.classify_model_probability(p_val),
                     model_version=self.model.model_version,
                     prediction_timestamp=now.isoformat(),
                     forecast_start=now.isoformat(),

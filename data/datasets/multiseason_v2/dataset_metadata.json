@@ -1,0 +1,26 @@
+{
+  "dataset_version": "multiseason_v2_c9e0252b5b",
+  "created_at": "2026-10-07T01:44:58.743893+00:00",
+  "total_samples": 24171,
+  "positive_samples": 1481,
+  "negative_samples": 22690,
+  "class_ratio": "1:15.3",
+  "negative_sampling_ratio": 15,
+  "min_detection_confidence": 50.0,
+  "grid_resolution_meters": 500,
+  "prediction_horizon": "24h",
+  "regions": [
+    "Uttarakhand",
+    "Western_Ghats"
+  ],
+  "train_samples": 4442,
+  "val_samples": 18502,
+  "test_samples": 1227,
+  "split_strategy": "temporal_multi_season",
+  "strict_anti_leakage": true,
+  "files": {
+    "train_parquet": "train.parquet",
+    "val_parquet": "val.parquet",
+    "test_parquet": "test.parquet"
+  }
+}

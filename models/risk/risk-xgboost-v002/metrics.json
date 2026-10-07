@@ -1,0 +1,59 @@
+{
+  "model_version": "risk-xgboost-v002",
+  "dataset_evaluated": "test.parquet (strictly unseen 2025 season)",
+  "samples": 1227,
+  "positives": 72,
+  "negatives": 1155,
+  "alert_threshold": 0.1,
+  "metrics": {
+    "accuracy": 0.9176854115729421,
+    "precision": 0.22641509433962265,
+    "recall": 0.16666666666666666,
+    "f1_score": 0.192,
+    "roc_auc": 0.7632335257335258,
+    "pr_auc": 0.1798200838073985,
+    "brier_score": 0.052909942461885136,
+    "specificity": 0.9645021645021645,
+    "false_positive_rate": 0.0354978354978355,
+    "confusion_matrix": {
+      "tn": 1114,
+      "fp": 41,
+      "fn": 60,
+      "tp": 12
+    }
+  },
+  "regional_breakdown": {
+    "UTT": {
+      "samples": 658,
+      "positives": 38,
+      "accuracy": 0.9224924012158054,
+      "precision": 0.27586206896551724,
+      "recall": 0.21052631578947367,
+      "f1": 0.23880597014925373,
+      "roc_auc": 0.8419142614601018,
+      "pr_auc": 0.27156633287374343,
+      "confusion_matrix": {
+        "tn": 599,
+        "fp": 21,
+        "fn": 30,
+        "tp": 8
+      }
+    },
+    "WES": {
+      "samples": 569,
+      "positives": 34,
+      "accuracy": 0.9121265377855887,
+      "precision": 0.16666666666666666,
+      "recall": 0.11764705882352941,
+      "f1": 0.13793103448275862,
+      "roc_auc": 0.6630566245189664,
+      "pr_auc": 0.10999547936723916,
+      "confusion_matrix": {
+        "tn": 515,
+        "fp": 20,
+        "fn": 30,
+        "tp": 4
+      }
+    }
+  }
+}

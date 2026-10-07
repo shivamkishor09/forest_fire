@@ -16,7 +16,7 @@ class RiskEngineSettings(BaseSettings):
     )
 
     RISK_MODEL_DIR: str = os.getenv("RISK_MODEL_DIR", "models/risk")
-    DEFAULT_RISK_MODEL_VERSION: str = os.getenv("DEFAULT_RISK_MODEL_VERSION", "risk-xgboost-v001")
+    DEFAULT_RISK_MODEL_VERSION: str = os.getenv("DEFAULT_RISK_MODEL_VERSION", "risk-xgboost-v002")
     RISK_MODEL_RANDOM_SEED: int = int(os.getenv("RISK_MODEL_RANDOM_SEED", "42"))
 
     # Baseline classification thresholds (centralized & configurable)

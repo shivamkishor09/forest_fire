@@ -34,6 +34,8 @@ models/risk/*
 !models/risk/.gitkeep
 !models/risk/risk-xgboost-v001
 !models/risk/risk-xgboost-v001/**
+!models/risk/risk-xgboost-v002
+!models/risk/risk-xgboost-v002/**
 models/spread/*
 !models/spread/.gitkeep
 postgres-data/

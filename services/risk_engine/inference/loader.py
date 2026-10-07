@@ -44,7 +44,27 @@ class ModelLoader:
         preprocessor_file = model_dir / "preprocessor.json"
         preprocessor = ModelArtifactSerializer.load_preprocessor(preprocessor_file)
 
-        # 3. Load model artifact
+        # 3. Load optional calibrator & thresholds
+        cal_file = model_dir / "calibrator.joblib"
+        calibrator = None
+        if cal_file.exists():
+            try:
+                import joblib
+                calibrator = joblib.load(cal_file)
+            except Exception:
+                calibrator = None
+
+        thresh_file = model_dir / "thresholds.json"
+        thresholds = None
+        if thresh_file.exists():
+            try:
+                import json
+                with open(thresh_file, "r", encoding="utf-8") as f:
+                    thresholds = json.load(f)
+            except Exception:
+                thresholds = None
+
+        # 4. Load model artifact
         xgb_file = model_dir / "model.json"
         rf_file = model_dir / "model.joblib"
 
@@ -54,6 +74,8 @@ class ModelLoader:
                 model=raw_model,
                 preprocessor=preprocessor,
                 metadata=metadata,
+                calibrator=calibrator,
+                thresholds=thresholds,
             )
         elif rf_file.exists():
             raw_model = ModelArtifactSerializer.load_random_forest(rf_file)

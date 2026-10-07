@@ -38,6 +38,19 @@ SAMPLE_REGIONS = [
         ],
         "total_cells": 1378,
     },
+    {
+        "id": "8da85f64-5717-4562-b3fc-2c963f66afa8",
+        "code": "HIMACHAL_SHIMLA",
+        "alias": "reg-03",
+        "name": "Shimla Forest Division",
+        "state": "Himachal Pradesh",
+        "area_sqkm": 500.0,
+        "centroid": [77.1734, 31.1048],
+        "boundary": [
+            [[77.10, 31.00], [77.25, 31.00], [77.25, 31.20], [77.10, 31.20], [77.10, 31.00]]
+        ],
+        "total_cells": 2000,
+    },
 ]
 
 
