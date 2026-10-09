@@ -1,0 +1,6 @@
+{
+  "ALERT_THRESHOLD": 0.1,
+  "LOW_MAX": 0.07,
+  "MODERATE_MAX": 0.1,
+  "HIGH_MAX": 0.18
+}

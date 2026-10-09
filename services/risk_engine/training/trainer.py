@@ -20,21 +20,31 @@ class TrainedXGBoostRiskModel(BaseRiskModel):
         model: xgb.XGBClassifier,
         preprocessor: FeaturePreprocessor,
         metadata: ModelMetadata,
+        calibrator: Optional[Any] = None,
+        thresholds: Optional[Dict[str, float]] = None,
     ):
         super().__init__(metadata)
         self.raw_model = model
         self.preprocessor = preprocessor
+        self.calibrator = calibrator
+        self.thresholds = thresholds or {}
 
     def predict_susceptibility(self, features: Dict[str, Any]) -> float:
         """Compute single-cell fire risk probability in [0.0, 1.0]."""
         x = self.preprocessor.transform_dict(features)
-        proba = float(self.raw_model.predict_proba(x)[0, 1])
+        if self.calibrator is not None:
+            proba = float(self.calibrator.predict_proba(x)[0, 1])
+        else:
+            proba = float(self.raw_model.predict_proba(x)[0, 1])
         return round(float(np.clip(proba, 0.0, 1.0)), 4)
 
     def predict_batch_probabilities(self, df: pd.DataFrame) -> np.ndarray:
         """Compute vectorized batch fire risk probabilities for a DataFrame."""
         x = self.preprocessor.transform_dataframe(df)
-        probas = self.raw_model.predict_proba(x)[:, 1]
+        if self.calibrator is not None:
+            probas = self.calibrator.predict_proba(x)[:, 1]
+        else:
+            probas = self.raw_model.predict_proba(x)[:, 1]
         return np.clip(probas, 0.0, 1.0)
 
     @property
