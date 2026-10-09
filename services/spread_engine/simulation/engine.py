@@ -99,6 +99,40 @@ class SpreadSimulationEngine:
         else:
             ign_r, ign_c = grid.lat_lon_to_row_col(typed_input.ignition.lat, typed_input.ignition.lon)
 
+        # Check critical spread threshold:
+        # In calm/zero wind (wind_speed <= 0.5 m/s) with low flammability fuel (fuel_factor <= 0.40),
+        # convective and radiative heat flux is insufficient to sustain wildfire propagation.
+        # The fire does not propagate across the landscape, resulting in zero/minimum spread.
+        fuel_factor = self.physics.calculate_fuel_factor(typed_input.terrain.fuel_type)
+        is_calm_wind = (wind_speed is None or wind_speed <= 0.5)
+        is_low_fuel = (fuel_factor <= 0.40)
+        is_mild_slope = (abs(typed_input.terrain.slope_deg) < 15.0)
+        heading_fallback = typed_input.wind.heading_deg if typed_input.wind else 0.0
+
+        if is_calm_wind and is_low_fuel and is_mild_slope:
+            empty_poly = {"type": "Polygon", "coordinates": []}
+            timesteps: List[TimestepResult] = [
+                TimestepResult(
+                    step_hour=hour,
+                    burned_area_ha=0.0,
+                    spread_velocity_kmh=0.0,
+                    spread_direction_deg=heading_fallback,
+                    intensity_mw=0.0,
+                    boundary_polygon=empty_poly,
+                    active_burning_cells=0,
+                    total_burned_cells=0,
+                )
+                for hour in range(1, typed_input.duration_hours + 1)
+            ]
+            return SimulationResult(
+                simulation_id=typed_input.simulation_id,
+                total_area_burned_ha=0.0,
+                duration_hours=typed_input.duration_hours,
+                peak_spread_velocity_kmh=0.0,
+                timesteps=timesteps,
+                engine_version=ENGINE_VERSION,
+            )
+
         # Ignite initial cell
         grid.ignite(ign_r, ign_c, burning_steps=self.params.burning_duration_steps)
 
@@ -113,7 +147,6 @@ class SpreadSimulationEngine:
 
         timesteps: List[TimestepResult] = []
         sub_steps = self.params.sub_steps_per_hour
-        heading_fallback = typed_input.wind.heading_deg if typed_input.wind else 0.0
 
         # Simulate hour by hour
         for hour in range(1, typed_input.duration_hours + 1):

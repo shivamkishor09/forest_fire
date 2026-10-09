@@ -119,7 +119,7 @@ class RiskService:
                 except Exception:
                     pass
 
-            if not is_match and ("garhwal" in region_code.lower() and "sample_run" in cand.name.lower()):
+            if not is_match and ("garhwal" in region_code.lower() and "garhwal" in cand.name.lower()):
                 is_match = True
 
             if is_match:

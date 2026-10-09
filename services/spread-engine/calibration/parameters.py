@@ -31,6 +31,8 @@ class SimulationParameters:
 
     # Deterministic ignition threshold (when in deterministic mode)
     spread_threshold: float = 0.25
+    accumulation_threshold: float = 0.85
+    flash_ignition_threshold: float = 0.80
 
     # Radiative fire intensity coefficients (MW)
     base_intensity_mw: float = 4.0

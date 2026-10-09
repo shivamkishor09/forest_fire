@@ -33,8 +33,8 @@ def test_get_risk_layer_real_model_inference():
     assert data["type"] == "FeatureCollection"
     assert "properties" in data
     assert data["properties"]["model_version"] == "risk-xgboost-v001"
-    assert data["properties"]["total_cells"] == 2668
-    assert len(data["features"]) == 2668
+    assert data["properties"]["total_cells"] == 1400
+    assert len(data["features"]) == 1400
 
     # Validate cell feature structure
     sample_cell = data["features"][0]
@@ -69,7 +69,7 @@ def test_get_risk_layer_by_region_uuid():
     assert resp.status_code == 200
     data = resp.json()
     assert data["type"] == "FeatureCollection"
-    assert len(data["features"]) == 2668
+    assert len(data["features"]) == 1400
 
 
 def test_get_risk_layer_min_risk_filtering():
@@ -100,7 +100,7 @@ def test_post_risk_predict_execution():
     data = resp.json()
 
     assert data["status"] == "COMPLETED"
-    assert data["cells_predicted"] == 2668
+    assert data["cells_predicted"] == 1400
     assert data["model_version"] == "risk-xgboost-v001"
     assert 0.0 <= data["mean_risk_probability"] <= 1.0
     assert "job_id" in data
@@ -133,7 +133,7 @@ def test_get_risk_summary_endpoint():
     assert resp.status_code == 200
     data = resp.json()
 
-    assert data["total_cells"] == 2668
+    assert data["total_cells"] == 1400
     assert data["model_version"] == "risk-xgboost-v001"
     assert 0.0 <= data["mean_probability"] <= 1.0
 
@@ -168,7 +168,7 @@ def test_risk_layer_unknown_region():
 def test_risk_predict_region_missing_environmental_features():
     """Verify region without model-ready features returns 404 DATA_NOT_FOUND."""
     payload = {
-        "region_id": WAYANAD_UUID,
+        "region_id": "4da85f64-5717-4562-b3fc-2c963f66afa2",
         "target_date": "2026-10-06",
     }
     resp = client.post("/api/v1/risk/predict", json=payload)

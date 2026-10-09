@@ -1,0 +1,4 @@
+-r services/api/requirements.txt
+-r services/data-pipeline/requirements.txt
+-r services/risk-engine/requirements.txt
+-r services/spread-engine/requirements.txt
