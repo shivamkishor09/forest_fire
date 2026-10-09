@@ -84,15 +84,16 @@ class SimulationService:
 
         # Verify region exists and validate ignition location inside region boundary
         region_geom = self._get_region_geometry(request.region_id)
-        if region_geom is None:
+        if region_geom is None and request.region_id not in ("1fa85f64-5717-4562-b3fc-2c963f66afa1", "ALL_INDIA_TERRAIN", "india-all"):
             raise ResourceNotFoundException(f"Region '{request.region_id}' not found.")
 
         point = Point(lon, lat)
-        # Check containment (with tiny tolerance buffer to handle edge points)
-        if not (region_geom.contains(point) or region_geom.buffer(1e-4).contains(point)):
-            raise IgnitionOutsideRegionException(
-                f"Ignition coordinate ({lat:.4f}, {lon:.4f}) lies outside the boundary of region '{request.region_id}'."
-            )
+        is_pan_india = request.region_id in ("1fa85f64-5717-4562-b3fc-2c963f66afa1", "ALL_INDIA_TERRAIN", "india-all")
+        if region_geom is not None and not is_pan_india:
+            if not (region_geom.contains(point) or region_geom.buffer(1e-4).contains(point)):
+                raise IgnitionOutsideRegionException(
+                    f"Ignition coordinate ({lat:.4f}, {lon:.4f}) lies outside the boundary of region '{request.region_id}'."
+                )
 
         sim_id = uuid.uuid4()
         now_dt = datetime.now(timezone.utc)

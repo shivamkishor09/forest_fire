@@ -7,11 +7,15 @@ from ..models.enums import FuelClass
 FUEL_FLAMMABILITY_FACTORS: Dict[str, float] = {
     FuelClass.CONIFER_HIGH_FLAMMABILITY.value: 1.80,    # Chir Pine: volatile resins, aerated needles
     FuelClass.GRASSLAND_FAST_SPREAD.value: 1.50,         # Scrub/Grassland: high surface-area-to-volume ratio
-    FuelClass.CONIFER_MODERATE_FLAMMABILITY.value: 1.30, # Temperate Conifer (Deodar, Spruce, Fir)
+    FuelClass.GRASSLAND_RAPID_SPREAD.value: 1.50,        # Dry Grassland (Rapid)
+    FuelClass.CONIFER_MODERATE_FLAMMABILITY.value: 1.00, # Temperate Conifer (Deodar, Spruce, Fir)
+    FuelClass.PINE_MODERATE_FLAMMABILITY.value: 0.95,    # Pine Forest (Moderate): compact needle bed, moderate moisture
     FuelClass.BROADLEAF_HIGH_LITTER.value: 1.20,         # Sal Deciduous: heavy seasonal leaf litter
     FuelClass.BROADLEAF_MODERATE_LITTER.value: 1.00,     # Dry Deciduous / Mixed Forest (reference baseline)
     FuelClass.SHRUB_COMPACT.value: 0.90,                 # Compact Shrub / Heath
     FuelClass.AGRICULTURE_SEASONAL.value: 0.60,          # Agricultural Cropland / Fallow
+    FuelClass.DECIDUOUS_LOW_FLAMMABILITY.value: 0.30,    # Moist Deciduous (Low): high moisture foliage, low spread
+    FuelClass.NON_FOREST_LOW_FUEL.value: 0.15,           # Non-Forest / Sparse Vegetation (Extremely Low)
     FuelClass.UNKNOWN.value: 1.00,                       # Unknown fallback (baseline)
     FuelClass.NON_BURNABLE_WATER.value: 0.00,            # Water bodies: impermeable firebreak
     FuelClass.NON_BURNABLE_BARREN.value: 0.00,           # Barren rock/scree/snow: zero combustible fuel
@@ -29,6 +33,16 @@ RAW_FUEL_ALIASES: Dict[str, str] = {
     "AGRICULTURE_CROPLAND": FuelClass.AGRICULTURE_SEASONAL.value,
     "WATER_RIVER": FuelClass.NON_BURNABLE_WATER.value,
     "BARREN_ROCK_SNOW": FuelClass.NON_BURNABLE_BARREN.value,
+    "DECIDUOUS_LOW": FuelClass.DECIDUOUS_LOW_FLAMMABILITY.value,
+    "DECIDUOUS_LOW_FLAMMABILITY": FuelClass.DECIDUOUS_LOW_FLAMMABILITY.value,
+    "PINE_MODERATE": FuelClass.PINE_MODERATE_FLAMMABILITY.value,
+    "PINE_MODERATE_FLAMMABILITY": FuelClass.PINE_MODERATE_FLAMMABILITY.value,
+    "GRASSLAND_RAPID": FuelClass.GRASSLAND_RAPID_SPREAD.value,
+    "GRASSLAND_RAPID_SPREAD": FuelClass.GRASSLAND_RAPID_SPREAD.value,
+    "NON_FOREST": FuelClass.NON_FOREST_LOW_FUEL.value,
+    "NON_FOREST_LOW_FUEL": FuelClass.NON_FOREST_LOW_FUEL.value,
+    "LOW": FuelClass.DECIDUOUS_LOW_FLAMMABILITY.value,
+    "LOW_FLAMMABILITY": FuelClass.DECIDUOUS_LOW_FLAMMABILITY.value,
 }
 
 

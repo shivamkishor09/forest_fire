@@ -77,6 +77,13 @@ export const SimulationPage: React.FC<SimulationPageProps> = ({
 }) => {
   const [boundaryWarning, setBoundaryWarning] = useState<string | null>(null);
   const [sidebarTab, setSidebarTab] = useState<'params' | 'metrics'>('params');
+  const [effectiveRegionId, setEffectiveRegionId] = useState<string>(
+    selectedRegion?.id || '1fa85f64-5717-4562-b3fc-2c963f66afa1'
+  );
+
+  useEffect(() => {
+    setEffectiveRegionId(selectedRegion?.id || '1fa85f64-5717-4562-b3fc-2c963f66afa1');
+  }, [selectedRegion?.id]);
 
   const {
     ignitionPoint,
@@ -105,7 +112,7 @@ export const SimulationPage: React.FC<SimulationPageProps> = ({
     stepForward,
     stepBackward,
     replaySimulation,
-  } = useSimulation(selectedRegion?.id || 'reg-01', initialIgnition);
+  } = useSimulation(effectiveRegionId, initialIgnition);
 
   // Global keyboard shortcuts for timeline navigation
   useEffect(() => {
@@ -133,16 +140,26 @@ export const SimulationPage: React.FC<SimulationPageProps> = ({
     };
   }, [setIsPlaying, stepBackward, stepForward]);
 
+  // Auto-dismiss open terrain advisory after 5 seconds
+  useEffect(() => {
+    if (boundaryWarning) {
+      const timer = setTimeout(() => setBoundaryWarning(null), 5000);
+      return () => clearTimeout(timer);
+    }
+  }, [boundaryWarning]);
+
   const handleMapClick = (lat: number, lng: number) => {
-    // Validate if the clicked point is within the selected region boundary
+    // Check if clicked point is outside selected sector boundary
     if (boundary?.geometry && !isPointInGeometry({ latitude: lat, longitude: lng }, boundary.geometry)) {
+      setEffectiveRegionId('1fa85f64-5717-4562-b3fc-2c963f66afa1');
       setBoundaryWarning(
-        `Coordinate (${lat.toFixed(4)}°N, ${lng.toFixed(4)}°E) is outside region boundary '${selectedRegion?.name || 'Selected Region'}'.`
+        `Open Terrain Mode: Ignition point (${lat.toFixed(4)}°N, ${lng.toFixed(4)}°E) is outside ${selectedRegion?.name || 'region boundary'}. Fire spread simulation will execute across open terrain.`
       );
-      return;
+    } else {
+      setEffectiveRegionId(selectedRegion?.id || '1fa85f64-5717-4562-b3fc-2c963f66afa1');
+      setBoundaryWarning(null);
     }
 
-    setBoundaryWarning(null);
     setIgnitionPoint({ latitude: lat, longitude: lng });
   };
 
@@ -171,15 +188,24 @@ export const SimulationPage: React.FC<SimulationPageProps> = ({
             <div className="absolute top-4 left-1/2 -translate-x-1/2 z-30 w-full max-w-md px-4 space-y-2">
               {error && (
                 <ErrorAlert
-                  title="Simulation Warning"
+                  title="Simulation Failure"
                   message={error}
                 />
               )}
               {boundaryWarning && (
-                <ErrorAlert
-                  title="Boundary Warning"
-                  message={boundaryWarning}
-                />
+                <div className="rounded-md bg-[#121418] border border-amber/60 p-3 shadow-xl flex items-center justify-between text-xs text-zinc-200 font-mono animate-in fade-in zoom-in-95 duration-150">
+                  <div className="flex items-center space-x-2.5">
+                    <span className="w-2 h-2 rounded-full bg-amber animate-pulse shrink-0"></span>
+                    <span className="text-[11px] leading-snug">{boundaryWarning}</span>
+                  </div>
+                  <button
+                    onClick={() => setBoundaryWarning(null)}
+                    className="ml-3 text-txt-muted hover:text-white text-xs px-1.5 py-0.5 rounded hover:bg-zinc-800"
+                    title="Dismiss notification"
+                  >
+                    ✕
+                  </button>
+                </div>
               )}
             </div>
           )}

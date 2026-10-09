@@ -30,6 +30,11 @@ class TransitionEvaluator:
         )
         self.deterministic = deterministic
         self.rng = np.random.default_rng(random_seed if random_seed is not None else 42)
+        self.ignition_exposure: Dict[Tuple[int, int], float] = {}
+
+    def reset(self) -> None:
+        """Reset internal exposure accumulation buffers."""
+        self.ignition_exposure.clear()
 
     def step(
         self,
@@ -96,7 +101,15 @@ class TransitionEvaluator:
 
             should_ignite = False
             if self.deterministic:
-                should_ignite = (combined_p >= self.params.spread_threshold)
+                # Accumulate physical heat/flame exposure over discrete sub-steps.
+                # Flash/crown ignition (combined_p >= flash_ignition_threshold) ignites in a single sub-step.
+                # Moderate fuels require multi-step heat accumulation before crossing ignition threshold,
+                # physically reflecting slower ignition time and preheating delay.
+                cur_exp = self.ignition_exposure.get((nr, nc), 0.0) + combined_p
+                self.ignition_exposure[(nr, nc)] = cur_exp
+                if cur_exp >= self.params.accumulation_threshold or combined_p >= self.params.flash_ignition_threshold:
+                    should_ignite = True
+                    self.ignition_exposure.pop((nr, nc), None)
             else:
                 should_ignite = (self.rng.random() < combined_p)
 
@@ -104,6 +117,15 @@ class TransitionEvaluator:
                 buffer.next_state[nr, nc] = CellState.BURNING.value
                 buffer.next_timer[nr, nc] = self.params.burning_duration_steps
                 newly_ignited_count += 1
+
+        # Prune exposure for unburned cells no longer adjacent to active fires (cooling)
+        if candidate_probabilities:
+            active_cands = set(candidate_probabilities.keys())
+            stale_keys = [k for k in self.ignition_exposure if k not in active_cands]
+            for k in stale_keys:
+                del self.ignition_exposure[k]
+        else:
+            self.ignition_exposure.clear()
 
         # Step 4: Commit transitions simultaneously
         buffer.commit_step()

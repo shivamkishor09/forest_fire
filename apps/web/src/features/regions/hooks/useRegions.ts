@@ -5,6 +5,13 @@ import { GeoJSONFeature, PolygonGeometry, MultiPolygonGeometry } from '../../../
 
 const DEFAULT_REGIONS: RegionSummary[] = [
   {
+    id: '1fa85f64-5717-4562-b3fc-2c963f66afa1',
+    code: 'ALL_INDIA_TERRAIN',
+    name: 'All India (Free Map Exploration)',
+    state: 'Pan-India',
+    area_sqkm: 3287263.0,
+  },
+  {
     id: '3fa85f64-5717-4562-b3fc-2c963f66afa6',
     code: 'UTTARAKHAND_GARHWAL',
     name: 'Garhwal Forest Division',
@@ -17,6 +24,41 @@ const DEFAULT_REGIONS: RegionSummary[] = [
     name: 'Wayanad Wildlife Sanctuary',
     state: 'Kerala',
     area_sqkm: 344.4,
+  },
+  {
+    id: '4da85f64-5717-4562-b3fc-2c963f66afa2',
+    code: 'UTTARAKHAND_CORBETT',
+    name: 'Jim Corbett National Park',
+    state: 'Uttarakhand',
+    area_sqkm: 1288.3,
+  },
+  {
+    id: '5ea85f64-5717-4562-b3fc-2c963f66afa3',
+    code: 'KARNATAKA_BANDIPUR',
+    name: 'Bandipur National Park',
+    state: 'Karnataka',
+    area_sqkm: 874.2,
+  },
+  {
+    id: '6fa85f64-5717-4562-b3fc-2c963f66afa4',
+    code: 'MP_KANHA',
+    name: 'Kanha Tiger Reserve',
+    state: 'Madhya Pradesh',
+    area_sqkm: 2074.0,
+  },
+  {
+    id: '8ba85f64-5717-4562-b3fc-2c963f66afa5',
+    code: 'ASSAM_KAZIRANGA',
+    name: 'Kaziranga National Park',
+    state: 'Assam',
+    area_sqkm: 1085.5,
+  },
+  {
+    id: '9ca85f64-5717-4562-b3fc-2c963f66afa8',
+    code: 'ODISHA_SIMILIPAL',
+    name: 'Similipal National Park',
+    state: 'Odisha',
+    area_sqkm: 2750.0,
   },
 ];
 

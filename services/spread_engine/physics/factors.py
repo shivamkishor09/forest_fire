@@ -100,6 +100,16 @@ class StandardSpreadFactors(SpreadFactors):
         if fuel_factor <= 0.0:
             return 0.0
 
+        # Physical extinction condition:
+        # In calm wind (<= 0.5 m/s or zero wind) with low-flammability fuel (fuel_factor <= 0.40),
+        # flame tilt and radiative heat flux are insufficient to overcome moisture and ignite
+        # adjacent 500m cells. Spread multiplier drops to 0.0, suppressing wildfire propagation.
+        is_calm_wind = (wind_speed_ms is None or wind_speed_ms <= 0.5)
+        is_low_fuel = (fuel_factor <= 0.40)
+        is_mild_slope = (slope_deg is None or abs(slope_deg) < 15.0) and (elevation_diff_m is None or elevation_diff_m <= 0)
+        if is_calm_wind and is_low_fuel and is_mild_slope:
+            return 0.0
+
         wind_factor = 1.0
         if wind_speed_ms is not None and wind_dir_deg is not None:
             wind_factor = self.calculate_wind_factor(
