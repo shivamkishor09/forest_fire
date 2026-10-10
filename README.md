@@ -177,3 +177,6 @@ npm run build
 - [Platform Limitations & Constraints](docs/LIMITATIONS.md)
 - [Known Issues & Operational Guidance](docs/KNOWN_ISSUES.md)
 - [Future Work & Research Roadmap](docs/FUTURE_WORK.md)
+
+<img width="1920" height="1020" alt="Screenshot 2026-10-10 183712" src="https://github.com/user-attachments/assets/cf40de9e-001c-43d6-8a24-da8705841bbd" />
+<img width="1920" height="1020" alt="Screenshot 2026-10-10 183639" src="https://github.com/user-attachments/assets/ca95748b-d234-48c0-a01d-b8eab7e6c7db" />
